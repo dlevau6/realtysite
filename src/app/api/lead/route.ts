@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { getSupabaseServiceClient } from "@/lib/supabase";
 import { buildRoutingTag } from "@/lib/site-config";
+import { dispatchLeadWebhooks } from "@/lib/webhooks";
 
 const leadSchema = z.object({
   name: z.string().min(1).max(120),
@@ -72,9 +73,27 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Could not save lead" }, { status: 500 });
   }
 
-  // TODO wiring points for the next turn:
-  //  - Fire Structurely webhook (kick off 60-second SMS auto-reply)
-  //  - Forward to Follow Up Boss (or Google Sheet / Airtable interim)
+  // Fire outbound webhooks (Structurely, FUB) — best-effort, don't
+  // block the response on them. Any settings not configured are skipped.
+  await dispatchLeadWebhooks({
+    event: "lead.created",
+    source: "buyer_form",
+    name: d.name,
+    email: d.email,
+    phone: d.phone,
+    city_slug: d.citySlug,
+    variant: d.variant,
+    budget: d.budget ?? null,
+    home_contingency: d.homeContingency ?? null,
+    trade_in_address: d.tradeInAddress ?? null,
+    is_organic_seller: isOrganicSeller,
+    crm_routing_tag: routingTag,
+    status: "complete",
+    lead_type: "buyer",
+    sms_consent: d.smsConsent,
+  });
+
+  // TODO wiring points still open:
   //  - Emit a server-side Google Ads conversion event (better than
   //    relying on the /thank-you-buyer client-side pixel alone)
   return NextResponse.json({ ok: true, routingTag });

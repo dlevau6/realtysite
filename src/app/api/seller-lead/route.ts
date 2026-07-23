@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { getSupabaseServiceClient } from "@/lib/supabase";
+import { dispatchLeadWebhooks } from "@/lib/webhooks";
 
 const sellerLeadSchema = z.object({
   name: z.string().min(1).max(120),
@@ -63,8 +64,21 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Could not save lead" }, { status: 500 });
   }
 
-  // TODO next: fire Structurely webhook or Homebot enrollment webhook
-  //  - Homebot: sends automated monthly home-value/equity digests
-  //    (Chapter 11 recommends this for seller nurture)
+  await dispatchLeadWebhooks({
+    event: "lead.created",
+    source: "seller_form",
+    name: d.name,
+    email: d.email,
+    phone: d.phone,
+    trade_in_address: d.propertyAddress,
+    property_condition_tags: d.propertyConditionTags,
+    also_looking_to_buy: d.alsoLookingToBuy,
+    is_organic_seller: true,
+    crm_routing_tag: routingTag,
+    status: "complete",
+    lead_type: "seller",
+    sms_consent: d.smsConsent,
+  });
+
   return NextResponse.json({ ok: true, routingTag });
 }

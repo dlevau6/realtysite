@@ -20,10 +20,10 @@ layer these in.
 
 1. **GitHub**: `git init && git add -A && git commit -m "DR Horton pivot" &&
    git remote add origin <your-repo-url> && git push -u origin main`.
-2. **Supabase**: In the SQL Editor run **three** files in order:
-   `supabase/schema.sql` → `supabase/schema-drh.sql` → `supabase/schema-drh-v2.sql`.
-   The first two are safe to skip if you already ran them; the third adds
-   seller-funnel fields (`lead_type`, `property_condition_tags`, `also_looking_to_buy`).
+2. **Supabase**: In the SQL Editor run **four** files in order:
+   `supabase/schema.sql` → `supabase/schema-drh.sql` → `supabase/schema-drh-v2.sql`
+   → `supabase/schema-drh-v3.sql`. Each is safe to skip if already run;
+   v3 adds the `settings` table used by the admin panel.
    Copy the URL + both API keys from Project Settings → API.
 3. **Vercel**: Import the repo, drop the env vars from `.env.example` into
    Project Settings → Environment Variables, deploy.
@@ -44,6 +44,35 @@ stay empty until you decide to layer MLS data back in.
 | `SUPABASE_SERVICE_ROLE_KEY` | required (keep secret) |
 | `CRON_SECRET` | required if you keep the cron block in `vercel.json` |
 | `SPARK_ACCESS_TOKEN` / `SPARK_OFFICE_ID` | leave empty for now |
+| `ADMIN_PASSWORD` | password Eric enters at `/admin/login` |
+| `ADMIN_SESSION_SECRET` | HMAC key for admin cookies (`openssl rand -hex 32`) |
+
+## Admin panel
+
+Eric signs in at **`/admin/login`** with `ADMIN_PASSWORD`. Session lasts
+12 hours; cookie is HTTP-only, SameSite=Strict, HMAC-signed with
+`ADMIN_SESSION_SECRET`. Middleware protects all `/admin/*` and
+`/api/admin/*` routes.
+
+- **`/admin`** — dashboard with today / week / all-time lead counts,
+  buyer vs seller split, complete vs partial split, organic-seller
+  count, top cities, and the 8 most-recent leads
+- **`/admin/leads`** — filterable table (by type, status, city,
+  organic-seller flag, or search across name/email/phone/address)
+- **`/admin/settings`** — integrations control panel. All values stored
+  in the Supabase `settings` table and read at request time — no
+  redeploy needed to change them. Covers:
+  - Structurely / Follow Up Boss / Homebot webhook URLs
+    (Homebot only fires for seller leads)
+  - Notification email
+  - Google Ads conversion ID + buyer/seller labels
+  - GA4 measurement ID
+
+After each successful form submission the API routes POST the lead
+payload to any webhook URL configured in Settings (fire-and-forget, 5s
+timeout, no impact on user response time). Thank-you pages read the
+Google Ads / GA4 IDs from settings and inject the correct gtag base +
+conversion event automatically.
 
 ## What's built
 
