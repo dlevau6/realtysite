@@ -1,20 +1,19 @@
 import type { Metadata } from "next";
-import { Fraunces, Inter, IBM_Plex_Mono } from "next/font/google";
+import { Montserrat, Open_Sans, IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
-import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { SITE } from "@/lib/site-config";
 
-const fraunces = Fraunces({
+const montserrat = Montserrat({
   subsets: ["latin"],
-  variable: "--font-fraunces",
-  axes: ["opsz", "SOFT", "WONK"],
+  weight: ["500", "600", "700", "800"],
+  variable: "--font-montserrat",
   display: "swap",
 });
 
-const inter = Inter({
+const openSans = Open_Sans({
   subsets: ["latin"],
-  variable: "--font-inter",
+  variable: "--font-open-sans",
   display: "swap",
 });
 
@@ -28,12 +27,12 @@ const plexMono = IBM_Plex_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL(SITE.url),
   title: {
-    default: `${SITE.agentName} | ${SITE.tagline}`,
+    default: `${SITE.brandName} — ${SITE.tagline}`,
     template: `%s | ${SITE.brandName}`,
   },
   description: SITE.description,
   openGraph: {
-    title: `${SITE.agentName} | ${SITE.tagline}`,
+    title: `${SITE.brandName} — ${SITE.tagline}`,
     description: SITE.description,
     url: SITE.url,
     siteName: SITE.brandName,
@@ -42,8 +41,14 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: `${SITE.agentName} | ${SITE.tagline}`,
+    title: `${SITE.brandName} — ${SITE.tagline}`,
     description: SITE.description,
+  },
+  robots: {
+    // Sample data phase — keep robots open. Confirm before real launch that
+    // the DR Horton written authorization is on file (see Chapter 0).
+    index: true,
+    follow: true,
   },
 };
 
@@ -55,9 +60,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${fraunces.variable} ${inter.variable} ${plexMono.variable} antialiased`}
+        className={`${montserrat.variable} ${openSans.variable} ${plexMono.variable} antialiased`}
       >
-        <Header />
+        {/* Landing pages intentionally have no top nav — the funnel only
+            allows one exit (the form). Interior pages can add their own
+            header component if needed later. */}
         <main>{children}</main>
         <Footer />
       </body>

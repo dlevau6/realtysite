@@ -1,33 +1,32 @@
 @import "tailwindcss";
 
 :root {
-  /* Brand palette — derived from Lake Norman Realtor1 branding
-     (navy + teal wave mark, warm gold accent from print collateral) */
-  --color-ink: #0e1e29;        /* primary text */
-  --color-navy: #0b2a45;       /* primary brand — headers, nav, CTAs */
-  --color-navy-deep: #071b2e;  /* footer, dark sections */
-  --color-teal: #1f7a8c;       /* secondary — links, accents, wave motif */
-  --color-teal-soft: #e4f0f0;  /* tinted backgrounds, badges */
-  --color-gold: #a9832f;       /* sparing accent — price, highlights, dividers */
-  --color-gold-soft: #f4ead0;
-  --color-mist: #f6f7f7;       /* section background, cool off-white */
-  --color-white: #ffffff;
-  --color-line: #dde3e3;       /* hairlines, borders */
+  /* DR Horton NC Homes brand palette — from Chapter 2 of the strategy guide */
+  --color-drh-red: #E31837;      /* Primary CTA — action ONLY */
+  --color-drh-red-hover: #C1122C;
+  --color-navy: #0A2240;         /* Trust — headers, nav, footer, form bg */
+  --color-navy-deep: #051530;
+  --color-carolina: #A9D6E5;     /* Secondary — testimonials, dividers */
+  --color-carolina-soft: #E5F1F6;
+  --color-mist: #F8F9FA;         /* Section backgrounds */
+  --color-white: #FFFFFF;
+  --color-ink: #212529;          /* Body text */
+  --color-line: #DEE2E6;
 
-  --font-display: var(--font-fraunces);
-  --font-body: var(--font-inter);
+  --font-display: var(--font-montserrat);
+  --font-body: var(--font-open-sans);
   --font-data: var(--font-mono-ibm);
 }
 
 @theme inline {
-  --color-ink: var(--color-ink);
+  --color-drh-red: var(--color-drh-red);
+  --color-drh-red-hover: var(--color-drh-red-hover);
   --color-navy: var(--color-navy);
   --color-navy-deep: var(--color-navy-deep);
-  --color-teal: var(--color-teal);
-  --color-teal-soft: var(--color-teal-soft);
-  --color-gold: var(--color-gold);
-  --color-gold-soft: var(--color-gold-soft);
+  --color-carolina: var(--color-carolina);
+  --color-carolina-soft: var(--color-carolina-soft);
   --color-mist: var(--color-mist);
+  --color-ink: var(--color-ink);
   --color-line: var(--color-line);
 
   --font-display: var(--font-display);
@@ -43,20 +42,8 @@ body {
 
 h1, h2, h3, h4 {
   font-family: var(--font-display);
-}
-
-/* Signature element: the "horizon line" — a thin wave rule that separates
-   major sections, echoing the wave in the client's logo mark. Used sparingly. */
-.horizon-divider {
-  position: relative;
-  height: 28px;
-  overflow: hidden;
-}
-.horizon-divider svg {
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  height: 100%;
+  font-weight: 700;
+  letter-spacing: -0.01em;
 }
 
 /* Respect reduced-motion preferences site-wide */
@@ -70,6 +57,6 @@ h1, h2, h3, h4 {
 }
 
 :focus-visible {
-  outline: 2px solid var(--color-gold);
+  outline: 2px solid var(--color-drh-red);
   outline-offset: 2px;
 }

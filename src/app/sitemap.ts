@@ -1,31 +1,16 @@
 import type { MetadataRoute } from "next";
-import { getAllListingSlugs, getAllNeighborhoods } from "@/lib/data/listings";
 import { SITE } from "@/lib/site-config";
 
-export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const [listingSlugs, neighborhoods] = await Promise.all([
-    getAllListingSlugs(),
-    getAllNeighborhoods(),
-  ]);
-
+export default function sitemap(): MetadataRoute.Sitemap {
   const staticPages: MetadataRoute.Sitemap = [
-    { url: SITE.url, changeFrequency: "daily", priority: 1 },
-    { url: `${SITE.url}/listings`, changeFrequency: "hourly", priority: 0.9 },
-    { url: `${SITE.url}/neighborhoods`, changeFrequency: "weekly", priority: 0.8 },
-    { url: `${SITE.url}/about`, changeFrequency: "monthly", priority: 0.5 },
+    { url: SITE.url, changeFrequency: "weekly", priority: 1 },
   ];
 
-  const listingPages: MetadataRoute.Sitemap = listingSlugs.map((slug) => ({
-    url: `${SITE.url}/listings/${slug}`,
-    changeFrequency: "daily",
-    priority: 0.7,
-  }));
-
-  const neighborhoodPages: MetadataRoute.Sitemap = neighborhoods.map((n) => ({
-    url: `${SITE.url}/neighborhoods/${n.slug}`,
+  const cityPages: MetadataRoute.Sitemap = SITE.cities.map((city) => ({
+    url: `${SITE.url}/new-homes/${city.slug}`,
     changeFrequency: "weekly",
-    priority: 0.6,
+    priority: 0.9,
   }));
 
-  return [...staticPages, ...listingPages, ...neighborhoodPages];
+  return [...staticPages, ...cityPages];
 }

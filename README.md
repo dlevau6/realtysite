@@ -1,84 +1,86 @@
-# Lake Norman Realtor1 — Site
+# DR Horton NC Homes — Buyer Landing Funnel
 
-Next.js (App Router) real estate site for Eric Fisher / Lake Norman Realtor1,
-with Spark API (Bridge Interactive) IDX integration and Supabase as the data
-layer.
+Next.js (App Router) lead-generation site for D.R. Horton new construction
+homes across 14 North Carolina markets. Built for the Google-Ads-driven
+strategy in the client's guides.
+
+Eric Fisher (Southern Homes of the Carolinas) is the operating agent.
 
 ## Stack
 
 - **Next.js 16** (App Router, TypeScript, Tailwind CSS v4)
-- **Supabase** (Postgres) — cached listings, neighborhoods, leads
-- **Spark API** — MLS/IDX listing feed, synced into Supabase on a schedule
-- **Vercel** — hosting + cron
+- **Supabase** (Postgres) — leads storage
+- **Vercel** — hosting
 
-## Local setup
+Deliberately NOT using: WordPress + Elementor, Heyflow (form built natively),
+Follow Up Boss (Supabase for now), Homebot. See "What's next" for when to
+layer these in.
 
-```bash
-npm install
-cp .env.example .env.local   # fill in real values, see below
-npm run dev
-```
+## Getting on GitHub → Vercel → Supabase
 
-## Getting this onto GitHub → Vercel → Supabase
+1. **GitHub**: `git init && git add -A && git commit -m "DR Horton pivot" &&
+   git remote add origin <your-repo-url> && git push -u origin main`.
+2. **Supabase**: In the SQL Editor run **both** `supabase/schema.sql`
+   (base schema) and `supabase/schema-drh.sql` (adds DR Horton lead fields).
+   Copy the URL + both API keys from Project Settings → API.
+3. **Vercel**: Import the repo, drop the env vars from `.env.example` into
+   Project Settings → Environment Variables, deploy.
 
-1. **GitHub**: push this folder to a new repo (`git init && git add -A &&
-   git commit -m "Initial scaffold" && git remote add origin <your-repo-url>
-   && git push -u origin main`).
-2. **Supabase**: create a new project, then run `supabase/schema.sql` in the
-   SQL editor (Project → SQL Editor → paste → Run). To populate the site
-   with demo listings while you're waiting on Spark/IDX credentials, also
-   run `supabase/seed.sql` — that gives you 6 realistic Lake Norman area
-   sample listings and 6 neighborhood guides. Delete the sample rows once
-   real MLS data starts flowing (SQL is at the top of `seed.sql`). Copy
-   the project URL and both API keys (anon + service role) from Project
-   Settings → API.
-3. **Vercel**: import the GitHub repo, add the environment variables below
-   in Project Settings → Environment Variables, then deploy. `vercel.json`
-   already defines the cron job — no extra setup needed there.
-4. **Spark API**: apply for access at sparkplatform.com. The MLS board has
-   to approve the application against the client's MLS credentials, which
-   can take a few days — kick this off early. Once approved, drop the
-   access token and office ID into Vercel's env vars and the next cron run
-   will populate listings.
+Cron is currently set to daily (Hobby plan compatible) — leave it or remove
+the block from `vercel.json` if you're not syncing MLS data.
 
 ## Environment variables
 
-See `.env.example`. All of these need to be set in Vercel for production:
+Only Supabase is required for the buyer funnel to work. Spark API vars can
+stay empty until you decide to layer MLS data back in.
 
-| Variable | Where to get it |
+| Variable | Notes |
 |---|---|
-| `NEXT_PUBLIC_SUPABASE_URL` | Supabase → Project Settings → API |
-| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Supabase → Project Settings → API |
-| `SUPABASE_URL` | same as above (server-side copy) |
-| `SUPABASE_SERVICE_ROLE_KEY` | Supabase → Project Settings → API (keep secret) |
-| `SPARK_ACCESS_TOKEN` | Issued by Spark once the MLS board approves your app |
-| `SPARK_OFFICE_ID` | The client's MLS office ID |
-| `CRON_SECRET` | Any random string — must match what Vercel Cron sends |
+| `NEXT_PUBLIC_SUPABASE_URL` | required |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | required |
+| `SUPABASE_URL` | required (same as above, server side) |
+| `SUPABASE_SERVICE_ROLE_KEY` | required (keep secret) |
+| `CRON_SECRET` | required if you keep the cron block in `vercel.json` |
+| `SPARK_ACCESS_TOKEN` / `SPARK_OFFICE_ID` | leave empty for now |
 
-## What's scaffolded vs. what's still open
+## What's built
 
-**Done:**
-- Full page structure: home, listings (index + detail), neighborhoods
-  (index + detail), about
-- Spark API client + mapper (`src/lib/spark-api.ts`) and the cron-protected
-  sync route (`src/app/api/sync-listings/route.ts`)
-- Supabase schema with RLS (`supabase/schema.sql`)
-- Lead capture form + API route
-- JSON-LD schema for agent, listings, and reviews (`src/lib/schema.tsx`)
-- `sitemap.ts` / `robots.ts`, ISR on all data-driven pages
-- Brand design system in `globals.css` (see also `src/lib/site-config.ts`
-  for the single source of truth on agent/brokerage info)
+- **Homepage** (`/`) — buyer landing with hero + embedded 3-step form,
+  no top nav (per Chapter 4 rules), city grid, testimonials, second CTA
+- **City pages** (`/new-homes/[city]`) — one per market, all 14 statically
+  generated at build time. Headline localized. Captures UTM params from
+  ad clicks for CRM attribution.
+- **3-step buyer funnel** (`src/components/BuyerFunnel.tsx`) — Variation A
+  ("Unreleased Inventory & Price Drops"). Micro-commitment flow: budget →
+  home contingency (+ optional trade-in address) → contact + TCPA consent.
+  Partial capture fires on Step 2→3 transition if seller signal is present.
+- **`/api/lead`** — full submission with CRM routing tag (`DRH-[City]-Buyer`
+  or `Organic-Seller-[City]`)
+- **`/api/lead-partial`** — the "seller trap"; captures the trade-in
+  address even when Step 3 is abandoned
+- **`/thank-you-buyer`** — conversion page with Google Ads pixel stub
+- **Footer** — Chapter 0 DR Horton legal disclosure, brokerage info,
+  Equal Housing marker, all 14 city links for local SEO
 
-**Still open:**
-- Real client bio copy on `/about` (currently placeholder text)
-- Video walkthroughs — the two `.mov` files from the client need
-  transcoding (MP4/WebM) and a hosting decision (Mux, Cloudflare Stream, or
-  Supabase Storage) before they go on listing pages
-- Lead notification — `/api/lead` saves to Supabase but doesn't yet email/
-  text the agent (suggest Resend or similar)
-- IDX display-rule review — confirm the disclaimer text in
-  `mapSparkListingToRow` matches the client's MLS board's exact required
-  wording before launch
-- Remove sample data — once real IDX data is flowing, delete the
-  `SAMPLE-*` listing rows and the 6 seed neighborhoods (SQL at the top of
-  `supabase/seed.sql`)
+## What's next (deferred to future turns)
+
+- **Form Variations B & C** — Rate Buy-Down and Smart Trade-Up flows. The
+  `BuyerFunnel` component already accepts a `variant` prop; Step 1 and
+  Step 2 question sets for B and C need to be added.
+- **Landing page templates 4 & 5** — Floor Plan Matchmaker and VIP List
+  variants of the city page
+- **Google Places API** — bind autocomplete to `#seller-property-address`
+  on Step 2 for cleanly formatted NC addresses
+- **Exit-intent modal** — Step 3 abandonment recovery
+- **Dynamic URL-param content** — e.g., `?model=cali` prioritizes that
+  floor plan on the page
+- **`/home-value` seller funnel** — mirror of the buyer flow for organic
+  seller lead-gen
+- **Legal pages** — `/privacy` and `/terms` (links exist in footer but
+  routes not built yet)
+- **Structurely wiring** — hit their webhook from `/api/lead` for
+  60-second AI SMS reply
+- **Google Ads conversion IDs** — replace `AW-CONVERSION_ID/CONVERSION_LABEL`
+  placeholders in `/thank-you-buyer` once the Ads account is set up
+- **DR Horton written authorization** — get it from Eric's DR Horton
+  contact before real launch (Chapter 0)

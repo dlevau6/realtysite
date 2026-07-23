@@ -51,6 +51,22 @@ export type Lead = {
   message: string | null;
   listing_id: string | null;
   source_page: string;
+  // DR Horton NC Homes fields — see /supabase/schema-drh.sql
+  city_slug: string | null;
+  variant: "A" | "B" | "C" | null;
+  is_organic_seller: boolean;
+  home_contingency: string | null;
+  trade_in_address: string | null;
+  budget: string | null;
+  timeline: string | null;
+  move_in_ready: boolean | null;
+  crm_routing_tag: string | null;
+  utm_source: string | null;
+  utm_medium: string | null;
+  utm_campaign: string | null;
+  utm_term: string | null;
+  sms_consent: boolean;
+  status: "complete" | "partial";
   created_at: string;
 }
 
