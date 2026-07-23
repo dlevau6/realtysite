@@ -25,8 +25,13 @@ npm run dev
    git commit -m "Initial scaffold" && git remote add origin <your-repo-url>
    && git push -u origin main`).
 2. **Supabase**: create a new project, then run `supabase/schema.sql` in the
-   SQL editor (Project → SQL Editor → paste → Run). Copy the project URL and
-   both API keys (anon + service role) from Project Settings → API.
+   SQL editor (Project → SQL Editor → paste → Run). To populate the site
+   with demo listings while you're waiting on Spark/IDX credentials, also
+   run `supabase/seed.sql` — that gives you 6 realistic Lake Norman area
+   sample listings and 6 neighborhood guides. Delete the sample rows once
+   real MLS data starts flowing (SQL is at the top of `seed.sql`). Copy
+   the project URL and both API keys (anon + service role) from Project
+   Settings → API.
 3. **Vercel**: import the GitHub repo, add the environment variables below
    in Project Settings → Environment Variables, then deploy. `vercel.json`
    already defines the cron job — no extra setup needed there.
@@ -66,16 +71,14 @@ See `.env.example`. All of these need to be set in Vercel for production:
 
 **Still open:**
 - Real client bio copy on `/about` (currently placeholder text)
-- Neighborhood content — the `neighborhoods` table starts empty; write and
-  add rows for the service areas in `SITE.serviceAreas`
 - Video walkthroughs — the two `.mov` files from the client need
   transcoding (MP4/WebM) and a hosting decision (Mux, Cloudflare Stream, or
   Supabase Storage) before they go on listing pages
-- A clean logo file (SVG/transparent PNG) — nothing in the client's asset
-  batch was an isolated logo; currently using the branding flyer as a style
-  reference only
 - Lead notification — `/api/lead` saves to Supabase but doesn't yet email/
   text the agent (suggest Resend or similar)
 - IDX display-rule review — confirm the disclaimer text in
   `mapSparkListingToRow` matches the client's MLS board's exact required
   wording before launch
+- Remove sample data — once real IDX data is flowing, delete the
+  `SAMPLE-*` listing rows and the 6 seed neighborhoods (SQL at the top of
+  `supabase/seed.sql`)

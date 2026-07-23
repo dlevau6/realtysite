@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { SITE } from "@/lib/site-config";
 
@@ -11,13 +12,25 @@ export default function Header() {
   return (
     <header className="sticky top-0 z-40 border-b border-[var(--color-line)] bg-white/95 backdrop-blur">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-        <Link href="/" className="flex flex-col leading-tight">
-          <span className="font-[family-name:var(--font-display)] text-lg font-semibold text-[var(--color-navy)]">
-            {SITE.brandName}
-          </span>
-          <span className="text-xs tracking-wide text-[var(--color-teal)]">
-            {SITE.tagline}
-          </span>
+        <Link href="/" className="flex items-center gap-3">
+          <div className="relative h-11 w-11 flex-shrink-0">
+            <Image
+              src="/sample/logo.png"
+              alt=""
+              fill
+              sizes="44px"
+              className="object-contain"
+              priority
+            />
+          </div>
+          <div className="flex flex-col leading-tight">
+            <span className="font-[family-name:var(--font-display)] text-lg font-semibold text-[var(--color-navy)]">
+              {SITE.brandName}
+            </span>
+            <span className="text-xs tracking-wide text-[var(--color-teal)]">
+              {SITE.tagline}
+            </span>
+          </div>
         </Link>
 
         <nav className="hidden items-center gap-8 md:flex">

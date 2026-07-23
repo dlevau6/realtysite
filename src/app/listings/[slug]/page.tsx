@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import { notFound } from "next/navigation";
 import { getListingBySlug, getAllListingSlugs } from "@/lib/data/listings";
 import { JsonLd, listingSchema } from "@/lib/schema";
 import LeadForm from "@/components/LeadForm";
+import PhotoGallery from "@/components/PhotoGallery";
 
 export const revalidate = 3600;
 
@@ -52,18 +52,16 @@ export default async function ListingDetailPage({
     <article className="mx-auto max-w-5xl px-6 py-12">
       <JsonLd data={listingSchema(listing)} />
 
-      {listing.primary_photo_url ? (
-        <div className="relative aspect-[16/9] overflow-hidden rounded-2xl bg-[var(--color-mist)]">
-          <Image
-            src={listing.primary_photo_url}
-            alt={`${listing.address_line}, ${listing.city}, ${listing.state}`}
-            fill
-            priority
-            sizes="100vw"
-            className="object-cover"
-          />
-        </div>
-      ) : null}
+      <PhotoGallery
+        photos={
+          listing.photo_urls.length > 0
+            ? listing.photo_urls
+            : listing.primary_photo_url
+              ? [listing.primary_photo_url]
+              : []
+        }
+        address={`${listing.address_line}, ${listing.city}, ${listing.state}`}
+      />
 
       <div className="mt-8 grid gap-10 md:grid-cols-[2fr_1fr]">
         <div>

@@ -17,6 +17,11 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "*.supabase.co",
       },
+      {
+        // Sample-listing photos — remove once real IDX imagery is live
+        protocol: "https",
+        hostname: "images.unsplash.com",
+      },
     ],
   },
 };

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import { JsonLd, agentSchema } from "@/lib/schema";
 import { SITE } from "@/lib/site-config";
 
@@ -11,13 +12,28 @@ export default function AboutPage() {
   return (
     <article className="mx-auto max-w-3xl px-6 py-16">
       <JsonLd data={agentSchema()} />
-      <p className="font-[family-name:var(--font-data)] text-xs uppercase tracking-widest text-[var(--color-teal)]">
-        {SITE.agentTitle} · Lic. {SITE.licenseNumber}
-      </p>
-      <h1 className="mt-2 font-[family-name:var(--font-display)] text-4xl text-[var(--color-navy)]">
-        {SITE.agentName}
-      </h1>
-      <p className="mt-6 text-[var(--color-ink)]/80">
+
+      <div className="grid gap-8 md:grid-cols-[auto_1fr] md:items-start">
+        <div className="relative mx-auto h-40 w-40 overflow-hidden rounded-full border-4 border-[var(--color-teal-soft)] md:mx-0">
+          <Image
+            src="/sample/eric-headshot.jpg"
+            alt={SITE.agentName}
+            fill
+            sizes="10rem"
+            className="object-cover"
+          />
+        </div>
+        <div>
+          <p className="font-[family-name:var(--font-data)] text-xs uppercase tracking-widest text-[var(--color-teal)]">
+            {SITE.agentTitle} · Lic. {SITE.licenseNumber}
+          </p>
+          <h1 className="mt-2 font-[family-name:var(--font-display)] text-4xl text-[var(--color-navy)]">
+            {SITE.agentName}
+          </h1>
+        </div>
+      </div>
+
+      <p className="mt-10 text-[var(--color-ink)]/80">
         {/* TODO: replace with the client's actual bio copy — this is
             placeholder text drafted from the tone of their branding
             materials ("honest, experienced, professional; local expertise,

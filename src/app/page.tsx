@@ -1,7 +1,9 @@
 import Link from "next/link";
+import Image from "next/image";
 import PropertyCard from "@/components/PropertyCard";
 import HorizonDivider from "@/components/HorizonDivider";
 import Testimonials from "@/components/Testimonials";
+import MeetAgentBand from "@/components/MeetAgentBand";
 import { JsonLd, agentSchema } from "@/lib/schema";
 import { getFeaturedListings } from "@/lib/data/listings";
 import { SITE } from "@/lib/site-config";
@@ -18,14 +20,27 @@ export default async function HomePage() {
       {/* Hero — the headline sits on the "shoreline," the site's central
           visual idea: your next home is the horizon you're moving toward. */}
       <section className="relative overflow-hidden bg-[var(--color-navy)] text-white">
-        <div className="mx-auto max-w-6xl px-6 py-24 md:py-32">
+        {/* Subtle photographic backdrop — Lake Norman sunset */}
+        <div className="absolute inset-0 opacity-25">
+          <Image
+            src="https://images.unsplash.com/photo-1499856871958-5b9627545d1a?w=2000&auto=format&fit=crop&q=80"
+            alt=""
+            fill
+            priority
+            sizes="100vw"
+            className="object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-[var(--color-navy)] via-[var(--color-navy)]/85 to-transparent" />
+        </div>
+
+        <div className="relative mx-auto max-w-6xl px-6 py-24 md:py-32">
           <p className="font-[family-name:var(--font-data)] text-xs uppercase tracking-[0.2em] text-[var(--color-gold-soft)]">
             {SITE.serviceAreas.slice(0, 2).join(" · ")} real estate
           </p>
           <h1 className="mt-4 max-w-2xl font-[family-name:var(--font-display)] text-5xl leading-[1.05] md:text-6xl">
             Moving you to the lake — and everywhere along the shore.
           </h1>
-          <p className="mt-6 max-w-lg text-white/75">
+          <p className="mt-6 max-w-lg text-white/85">
             {SITE.agentName} helps buyers and sellers navigate Lake Norman and
             Charlotte real estate with local expertise and a steady hand from
             first showing to closing day.
@@ -81,6 +96,8 @@ export default async function HomePage() {
           </p>
         )}
       </section>
+
+      <MeetAgentBand />
 
       <Testimonials />
     </>
