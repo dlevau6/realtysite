@@ -20,8 +20,10 @@ layer these in.
 
 1. **GitHub**: `git init && git add -A && git commit -m "DR Horton pivot" &&
    git remote add origin <your-repo-url> && git push -u origin main`.
-2. **Supabase**: In the SQL Editor run **both** `supabase/schema.sql`
-   (base schema) and `supabase/schema-drh.sql` (adds DR Horton lead fields).
+2. **Supabase**: In the SQL Editor run **three** files in order:
+   `supabase/schema.sql` → `supabase/schema-drh.sql` → `supabase/schema-drh-v2.sql`.
+   The first two are safe to skip if you already ran them; the third adds
+   seller-funnel fields (`lead_type`, `property_condition_tags`, `also_looking_to_buy`).
    Copy the URL + both API keys from Project Settings → API.
 3. **Vercel**: Import the repo, drop the env vars from `.env.example` into
    Project Settings → Environment Variables, deploy.
@@ -54,13 +56,20 @@ stay empty until you decide to layer MLS data back in.
   ("Unreleased Inventory & Price Drops"). Micro-commitment flow: budget →
   home contingency (+ optional trade-in address) → contact + TCPA consent.
   Partial capture fires on Step 2→3 transition if seller signal is present.
-- **`/api/lead`** — full submission with CRM routing tag (`DRH-[City]-Buyer`
-  or `Organic-Seller-[City]`)
-- **`/api/lead-partial`** — the "seller trap"; captures the trade-in
-  address even when Step 3 is abandoned
-- **`/thank-you-buyer`** — conversion page with Google Ads pixel stub
+- **Seller landing** (`/home-value`) — organic-search destination for
+  "what's my home worth" style queries. Own 3-step funnel: address →
+  condition tags + also-buying cross-sell → contact + TCPA consent.
+- **`/api/lead`** — buyer form full submission, computes CRM routing tag
+- **`/api/lead-partial`** — buyer form Step 2 abandonment capture
+- **`/api/seller-lead`** — seller form submission with property condition
+  and also-buying flag; routes to `Organic-Seller-Direct*` CRM tags
+- **`/thank-you-buyer`** — buyer conversion page with Google Ads pixel stub
+- **`/thank-you-seller`** — seller conversion page; conditionally shows a
+  city-picker cross-sell when the visitor said they're also buying
+- **`/privacy`** and **`/terms`** — real starter content, flagged for
+  attorney review before launch
 - **Footer** — Chapter 0 DR Horton legal disclosure, brokerage info,
-  Equal Housing marker, all 14 city links for local SEO
+  Equal Housing marker, all 14 city links, "thinking of selling?" CTA
 
 ## What's next (deferred to future turns)
 
@@ -69,18 +78,18 @@ stay empty until you decide to layer MLS data back in.
   Step 2 question sets for B and C need to be added.
 - **Landing page templates 4 & 5** — Floor Plan Matchmaker and VIP List
   variants of the city page
-- **Google Places API** — bind autocomplete to `#seller-property-address`
-  on Step 2 for cleanly formatted NC addresses
-- **Exit-intent modal** — Step 3 abandonment recovery
+- **Google Places API** — bind autocomplete to address inputs on both
+  buyer Step 2 and seller Step 1
+- **Exit-intent modal** — Step 3 abandonment recovery on both funnels
 - **Dynamic URL-param content** — e.g., `?model=cali` prioritizes that
   floor plan on the page
-- **`/home-value` seller funnel** — mirror of the buyer flow for organic
-  seller lead-gen
-- **Legal pages** — `/privacy` and `/terms` (links exist in footer but
-  routes not built yet)
-- **Structurely wiring** — hit their webhook from `/api/lead` for
-  60-second AI SMS reply
-- **Google Ads conversion IDs** — replace `AW-CONVERSION_ID/CONVERSION_LABEL`
-  placeholders in `/thank-you-buyer` once the Ads account is set up
+- **Structurely wiring** — hit their webhook from `/api/lead` and
+  `/api/seller-lead` for 60-second AI SMS reply
+- **Homebot enrollment** — pipe seller leads into Homebot for the
+  automated monthly home-value/equity digest
+- **Google Ads conversion IDs** — replace the placeholders in
+  `/thank-you-buyer` and `/thank-you-seller` once the Ads account is set up
 - **DR Horton written authorization** — get it from Eric's DR Horton
   contact before real launch (Chapter 0)
+- **Legal review** — have a NC real estate attorney adapt `/privacy` and
+  `/terms` to the specific brokerage policies and NCREC rules

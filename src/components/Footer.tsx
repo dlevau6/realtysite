@@ -49,6 +49,14 @@ export default function Footer() {
               {SITE.email}
             </a>
           </p>
+          <p className="mt-4">
+            <Link
+              href="/home-value"
+              className="font-semibold text-[var(--color-carolina)] hover:text-white"
+            >
+              Thinking of selling? Get a home valuation →
+            </Link>
+          </p>
         </div>
 
         <div className="text-sm text-white/70">

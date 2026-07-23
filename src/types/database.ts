@@ -67,6 +67,10 @@ export type Lead = {
   utm_term: string | null;
   sms_consent: boolean;
   status: "complete" | "partial";
+  // Seller-funnel fields — see /supabase/schema-drh-v2.sql
+  lead_type: "buyer" | "seller";
+  property_condition_tags: string[] | null;
+  also_looking_to_buy: boolean | null;
   created_at: string;
 }
 
