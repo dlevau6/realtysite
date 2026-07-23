@@ -1,0 +1,75 @@
+@import "tailwindcss";
+
+:root {
+  /* Brand palette — derived from Lake Norman Realtor1 branding
+     (navy + teal wave mark, warm gold accent from print collateral) */
+  --color-ink: #0e1e29;        /* primary text */
+  --color-navy: #0b2a45;       /* primary brand — headers, nav, CTAs */
+  --color-navy-deep: #071b2e;  /* footer, dark sections */
+  --color-teal: #1f7a8c;       /* secondary — links, accents, wave motif */
+  --color-teal-soft: #e4f0f0;  /* tinted backgrounds, badges */
+  --color-gold: #a9832f;       /* sparing accent — price, highlights, dividers */
+  --color-gold-soft: #f4ead0;
+  --color-mist: #f6f7f7;       /* section background, cool off-white */
+  --color-white: #ffffff;
+  --color-line: #dde3e3;       /* hairlines, borders */
+
+  --font-display: var(--font-fraunces);
+  --font-body: var(--font-inter);
+  --font-data: var(--font-mono-ibm);
+}
+
+@theme inline {
+  --color-ink: var(--color-ink);
+  --color-navy: var(--color-navy);
+  --color-navy-deep: var(--color-navy-deep);
+  --color-teal: var(--color-teal);
+  --color-teal-soft: var(--color-teal-soft);
+  --color-gold: var(--color-gold);
+  --color-gold-soft: var(--color-gold-soft);
+  --color-mist: var(--color-mist);
+  --color-line: var(--color-line);
+
+  --font-display: var(--font-display);
+  --font-body: var(--font-body);
+  --font-data: var(--font-data);
+}
+
+body {
+  background: var(--color-white);
+  color: var(--color-ink);
+  font-family: var(--font-body);
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--font-display);
+}
+
+/* Signature element: the "horizon line" — a thin wave rule that separates
+   major sections, echoing the wave in the client's logo mark. Used sparingly. */
+.horizon-divider {
+  position: relative;
+  height: 28px;
+  overflow: hidden;
+}
+.horizon-divider svg {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* Respect reduced-motion preferences site-wide */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-gold);
+  outline-offset: 2px;
+}
