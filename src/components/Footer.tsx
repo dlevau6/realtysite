@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { SITE } from "@/lib/site-config";
+import { ALL_CITIES, SITE } from "@/lib/site-config";
 
 export default function Footer() {
   return (
@@ -62,10 +62,10 @@ export default function Footer() {
         <div className="text-sm text-white/70">
           <p className="mb-2 font-semibold text-white">Areas we serve</p>
           <div className="grid grid-cols-2 gap-x-4 gap-y-1">
-            {SITE.cities.map((city) => (
+            {ALL_CITIES.map((city) => (
               <Link
                 key={city.slug}
-                href={`/new-homes/${city.slug}`}
+                href={`/dr-horton/${city.slug}`}
                 className="hover:text-[var(--color-carolina)]"
               >
                 {city.name}

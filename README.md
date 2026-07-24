@@ -1,10 +1,11 @@
-# DR Horton NC Homes — Buyer Landing Funnel
+# LakeNormanRealtor1 — DR Horton NC specialist site
 
-Next.js (App Router) lead-generation site for D.R. Horton new construction
-homes across 14 North Carolina markets. Built for the Google-Ads-driven
-strategy in the client's guides.
+Next.js (App Router) lead-generation site for Eric Fisher — the
+LakeNormanRealtor1 brand — as a D.R. Horton new construction specialist
+across 14 North Carolina cities.
 
-Eric Fisher (Southern Homes of the Carolinas) is the operating agent.
+Eric Fisher (NC License #362747) is the operating agent through Southern
+Homes of the Carolinas. Melissa Fisher is featured as his partner.
 
 ## Stack
 

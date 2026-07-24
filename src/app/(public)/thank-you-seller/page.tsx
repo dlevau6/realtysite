@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { SITE } from "@/lib/site-config";
+import { ALL_CITIES, SITE } from "@/lib/site-config";
 import GoogleAdsConversion from "@/components/GoogleAdsConversion";
 
 export const dynamic = "force-dynamic";
@@ -70,10 +70,10 @@ export default async function ThankYouSellerPage({
               inventory and builder incentives — no separate form needed.
             </p>
             <div className="mt-4 grid gap-2 sm:grid-cols-2">
-              {SITE.cities.slice(0, 6).map((city) => (
+              {ALL_CITIES.slice(0, 6).map((city) => (
                 <Link
                   key={city.slug}
-                  href={`/new-homes/${city.slug}`}
+                  href={`/dr-horton/${city.slug}`}
                   className="rounded-lg border border-[var(--color-line)] px-4 py-2 text-sm font-semibold text-[var(--color-navy)] transition-colors hover:border-[var(--color-drh-red)] hover:bg-[var(--color-drh-red)]/5"
                 >
                   {city.name}, NC →

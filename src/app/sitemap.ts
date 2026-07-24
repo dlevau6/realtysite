@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
-import { SITE } from "@/lib/site-config";
+import { ALL_CITIES, SITE } from "@/lib/site-config";
+import { COMMUNITIES } from "@/lib/communities";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const staticPages: MetadataRoute.Sitemap = [
@@ -13,11 +14,20 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${SITE.url}/terms`, changeFrequency: "yearly", priority: 0.2 },
   ];
 
-  const cityPages: MetadataRoute.Sitemap = SITE.cities.map((city) => ({
-    url: `${SITE.url}/new-homes/${city.slug}`,
+  const cityPages: MetadataRoute.Sitemap = ALL_CITIES.map((city) => ({
+    url: `${SITE.url}/dr-horton/${city.slug}`,
     changeFrequency: "weekly",
     priority: 0.9,
   }));
 
-  return [...staticPages, ...cityPages];
+  // Only surface non-sold-out communities to search engines.
+  const communityPages: MetadataRoute.Sitemap = COMMUNITIES.filter(
+    (c) => c.status !== "sold-out"
+  ).map((c) => ({
+    url: `${SITE.url}/dr-horton/${c.citySlug}/${c.slug}`,
+    changeFrequency: "weekly",
+    priority: 0.8,
+  }));
+
+  return [...staticPages, ...cityPages, ...communityPages];
 }

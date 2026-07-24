@@ -1,17 +1,27 @@
 @import "tailwindcss";
 
 :root {
-  /* DR Horton NC Homes brand palette — from Chapter 2 of the strategy guide */
-  --color-drh-red: #E31837;      /* Primary CTA — action ONLY */
-  --color-drh-red-hover: #C1122C;
-  --color-navy: #0A2240;         /* Trust — headers, nav, footer, form bg */
+  /* LakeNormanRealtor1 primary brand colors (from Eric's actual logo/card) */
+  --color-navy: #0A2240;
   --color-navy-deep: #051530;
-  --color-carolina: #A9D6E5;     /* Secondary — testimonials, dividers */
+  --color-teal: #1F7A8C;         /* wave / lake motif from his logo */
+  --color-teal-soft: #E4F0F0;
+
+  /* DR Horton red — action ONLY, never body/background */
+  --color-drh-red: #E31837;
+  --color-drh-red-hover: #C1122C;
+
+  /* Supporting neutrals */
+  --color-carolina: #A9D6E5;
   --color-carolina-soft: #E5F1F6;
-  --color-mist: #F8F9FA;         /* Section backgrounds */
+  --color-mist: #F8F9FA;
   --color-white: #FFFFFF;
-  --color-ink: #212529;          /* Body text */
+  --color-ink: #212529;
   --color-line: #DEE2E6;
+
+  /* Gold retained as a soft-accent option for the "1.5% listing" band */
+  --color-gold: #A9832F;
+  --color-gold-soft: #F4EAD0;
 
   --font-display: var(--font-montserrat);
   --font-body: var(--font-open-sans);
@@ -19,15 +29,19 @@
 }
 
 @theme inline {
-  --color-drh-red: var(--color-drh-red);
-  --color-drh-red-hover: var(--color-drh-red-hover);
   --color-navy: var(--color-navy);
   --color-navy-deep: var(--color-navy-deep);
+  --color-teal: var(--color-teal);
+  --color-teal-soft: var(--color-teal-soft);
+  --color-drh-red: var(--color-drh-red);
+  --color-drh-red-hover: var(--color-drh-red-hover);
   --color-carolina: var(--color-carolina);
   --color-carolina-soft: var(--color-carolina-soft);
   --color-mist: var(--color-mist);
   --color-ink: var(--color-ink);
   --color-line: var(--color-line);
+  --color-gold: var(--color-gold);
+  --color-gold-soft: var(--color-gold-soft);
 
   --font-display: var(--font-display);
   --font-body: var(--font-body);
@@ -46,6 +60,17 @@ h1, h2, h3, h4 {
   letter-spacing: -0.01em;
 }
 
+/* Rotating hero — the site's signature above-fold moment. Uses CSS
+   crossfade so it works without JS and stays crisp on mobile. */
+@keyframes hero-fade {
+  0%, 22% { opacity: 1; }
+  28%, 94% { opacity: 0; }
+  100% { opacity: 1; }
+}
+.hero-slide {
+  animation: hero-fade 32s linear infinite;
+}
+
 /* Respect reduced-motion preferences site-wide */
 @media (prefers-reduced-motion: reduce) {
   * {
@@ -54,6 +79,8 @@ h1, h2, h3, h4 {
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
+  .hero-slide { animation: none; }
+  .hero-slide:not(:first-child) { opacity: 0; }
 }
 
 :focus-visible {

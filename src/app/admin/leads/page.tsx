@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { getFilteredLeads } from "@/lib/data/leads";
-import { SITE, getCityBySlug } from "@/lib/site-config";
+import { ALL_CITIES, getCityBySlug } from "@/lib/site-config";
 
 export const dynamic = "force-dynamic";
 
@@ -102,7 +102,7 @@ export default async function AdminLeadsPage({
             className="rounded-lg border border-[var(--color-line)] px-3 py-2 text-sm"
           >
             <option value="">All cities</option>
-            {SITE.cities.map((c) => (
+            {ALL_CITIES.map((c) => (
               <option key={c.slug} value={c.slug}>
                 {c.name}
               </option>
