@@ -12,6 +12,7 @@ import {
   getMetroForCity,
 } from "@/lib/site-config";
 import { getCommunitiesForCity } from "@/lib/communities";
+import { getCityContent } from "@/lib/city-content";
 
 export function generateStaticParams() {
   return ALL_CITIES.map((city) => ({ city: city.slug }));
@@ -25,9 +26,12 @@ export async function generateMetadata({
   const { city: slug } = await params;
   const city = getCityBySlug(slug);
   if (!city) return {};
+  const content = getCityContent(slug);
   return {
     title: `D.R. Horton new construction homes in ${city.name}, NC`,
-    description: `See available D.R. Horton communities in ${city.name}, NC — real starting prices, current status, and move-in dates. Free, no obligation, matches in 60 seconds.`,
+    description:
+      content?.metaDescription ??
+      `See available D.R. Horton communities in ${city.name}, NC — real starting prices, current status, and move-in dates.`,
   };
 }
 
@@ -44,6 +48,7 @@ export default async function CityPage({
 
   const metro = getMetroForCity(city.slug);
   const communities = getCommunitiesForCity(city.slug);
+  const content = getCityContent(city.slug);
 
   const sp = await searchParams;
   const asString = (v: string | string[] | undefined): string | undefined =>
@@ -58,6 +63,7 @@ export default async function CityPage({
   // Show sold-out communities as a quiet note, not a button.
   const activeCommunities = communities.filter((c) => c.status !== "sold-out");
   const soldOutCount = communities.filter((c) => c.status === "sold-out").length;
+  const sellingCount = communities.filter((c) => c.status === "selling").length;
 
   return (
     <>
@@ -70,12 +76,19 @@ export default async function CityPage({
             <h1 className="mt-4 font-[family-name:var(--font-display)] text-4xl font-extrabold leading-[1.05] md:text-5xl">
               D.R. Horton new construction homes in {city.name}, NC.
             </h1>
-            <p className="mt-6 max-w-lg text-lg text-white/85">
-              {communities.filter((c) => c.status === "selling").length > 0
-                ? `${communities.filter((c) => c.status === "selling").length} communities selling now`
-                : "Available floor plans, pricing, and move-in dates"}
-              {cityLandmark(city.slug) ? ` — near ${cityLandmark(city.slug)}` : ""}.
-            </p>
+            {/* Use the city-specific intro copy if we have it, fall back
+                to the generic "N communities selling now" line. */}
+            {content ? (
+              <p className="mt-6 max-w-lg text-lg text-white/85">{content.intro}</p>
+            ) : (
+              <p className="mt-6 max-w-lg text-lg text-white/85">
+                {sellingCount > 0
+                  ? `${sellingCount} communities selling now`
+                  : "Available floor plans, pricing, and move-in dates"}
+                {cityLandmark(city.slug) ? ` — near ${cityLandmark(city.slug)}` : ""}
+                .
+              </p>
+            )}
             <p className="mt-4 text-sm text-white/70">{TRUST_LINE}</p>
           </div>
 
@@ -131,6 +144,43 @@ export default async function CityPage({
           ) : null}
         </div>
       </section>
+
+      {/* Relocation highlights — unique per-city content from the client's
+          spec doc. This is the SEO differentiator that keeps Google from
+          treating our 14 city pages as thin/templated. */}
+      {content ? (
+        <section className="bg-[var(--color-mist)] py-16">
+          <div className="mx-auto max-w-5xl px-6">
+            <p className="font-[family-name:var(--font-data)] text-xs uppercase tracking-widest text-[var(--color-drh-red)]">
+              Why relocate here
+            </p>
+            <h2 className="mt-2 font-[family-name:var(--font-display)] text-3xl font-bold text-[var(--color-navy)]">
+              What buyers love about {city.name}
+            </h2>
+            <div className="mt-8 grid gap-6 md:grid-cols-2">
+              {content.highlights.map((h) => (
+                <div
+                  key={h.title}
+                  className="rounded-2xl border border-[var(--color-line)] bg-white p-6"
+                >
+                  <h3 className="flex items-start gap-2 font-[family-name:var(--font-display)] text-lg font-bold text-[var(--color-navy)]">
+                    <span
+                      aria-hidden
+                      className="mt-0.5 text-[var(--color-drh-red)]"
+                    >
+                      ✓
+                    </span>
+                    {h.title}
+                  </h3>
+                  <p className="mt-2 text-sm text-[var(--color-ink)]/80">
+                    {h.body}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      ) : null}
 
       {/* The 1.5% listing value prop — his differentiator */}
       <section className="border-y border-[var(--color-line)] bg-[var(--color-teal-soft)] py-14">
