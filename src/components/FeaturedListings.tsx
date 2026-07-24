@@ -17,7 +17,12 @@ const money = (n: number) =>
  * name per row and the aggregate MLS name in the section disclaimer.
  */
 export default async function FeaturedListings() {
-  const listings = await fetchFeaturedListings({ pageSize: 6 });
+  const raw = await fetchFeaturedListings({ pageSize: 12 });
+  // Spark's demo dataset omits or nulls ListPrice on many rows.
+  // Drop those since a listing without a price is worse than none.
+  const listings = raw
+    .filter((l) => typeof l.ListPrice === "number" && l.ListPrice > 0)
+    .slice(0, 6);
   if (listings.length === 0) return null;
 
   // Collect unique source system names for the aggregate disclaimer.
