@@ -119,7 +119,10 @@ export default function SellerFunnel({ utm }: Props) {
             valuation — not a Zillow guess.
           </p>
           <div className="mt-6">
-            <label htmlFor="property-address" className="sr-only">
+            <label
+              htmlFor="property-address"
+              className="mb-1 block text-xs font-semibold uppercase tracking-wider text-[var(--color-navy)]"
+            >
               Property address
             </label>
             <input
@@ -128,7 +131,7 @@ export default function SellerFunnel({ utm }: Props) {
               value={address}
               onChange={(e) => setAddress(e.target.value)}
               placeholder="123 Main St, Charlotte, NC 28202"
-              className="w-full rounded-lg border-2 border-[var(--color-line)] px-4 py-4 text-base focus:border-[var(--color-drh-red)] focus:outline-none"
+              className="w-full rounded-lg border-2 border-[var(--color-line)] bg-white px-4 py-4 text-base text-[var(--color-ink)] placeholder:text-[var(--color-ink)]/40 focus:border-[var(--color-drh-red)] focus:outline-none"
               autoComplete="street-address"
             />
             {/* TODO next: bind Google Places autocomplete to #property-address */}
@@ -229,31 +232,61 @@ export default function SellerFunnel({ utm }: Props) {
           <p className="font-[family-name:var(--font-display)] text-2xl font-bold text-[var(--color-navy)]">
             Where should we send your home value report?
           </p>
-          <div className="mt-6 space-y-3">
-            <input
-              type="text"
-              required
-              placeholder="First name"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              className="w-full rounded-lg border border-[var(--color-line)] px-3 py-3 text-sm"
-            />
-            <input
-              type="tel"
-              required
-              placeholder="Phone"
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-              className="w-full rounded-lg border border-[var(--color-line)] px-3 py-3 text-sm"
-            />
-            <input
-              type="email"
-              required
-              placeholder="Email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full rounded-lg border border-[var(--color-line)] px-3 py-3 text-sm"
-            />
+          <div className="mt-6 space-y-4">
+            <div>
+              <label
+                htmlFor="seller-name"
+                className="mb-1 block text-xs font-semibold uppercase tracking-wider text-[var(--color-navy)]"
+              >
+                First name
+              </label>
+              <input
+                id="seller-name"
+                type="text"
+                required
+                autoComplete="given-name"
+                placeholder="e.g. Alex"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                className="w-full rounded-lg border border-[var(--color-line)] bg-white px-3 py-3 text-base text-[var(--color-ink)] placeholder:text-[var(--color-ink)]/40 focus:border-[var(--color-drh-red)] focus:outline-none"
+              />
+            </div>
+            <div>
+              <label
+                htmlFor="seller-phone"
+                className="mb-1 block text-xs font-semibold uppercase tracking-wider text-[var(--color-navy)]"
+              >
+                Phone
+              </label>
+              <input
+                id="seller-phone"
+                type="tel"
+                required
+                autoComplete="tel"
+                placeholder="(704) 555-1234"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                className="w-full rounded-lg border border-[var(--color-line)] bg-white px-3 py-3 text-base text-[var(--color-ink)] placeholder:text-[var(--color-ink)]/40 focus:border-[var(--color-drh-red)] focus:outline-none"
+              />
+            </div>
+            <div>
+              <label
+                htmlFor="seller-email"
+                className="mb-1 block text-xs font-semibold uppercase tracking-wider text-[var(--color-navy)]"
+              >
+                Email
+              </label>
+              <input
+                id="seller-email"
+                type="email"
+                required
+                autoComplete="email"
+                placeholder="you@example.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="w-full rounded-lg border border-[var(--color-line)] bg-white px-3 py-3 text-base text-[var(--color-ink)] placeholder:text-[var(--color-ink)]/40 focus:border-[var(--color-drh-red)] focus:outline-none"
+              />
+            </div>
           </div>
 
           <label className="mt-5 flex cursor-pointer items-start gap-3 rounded-lg bg-[var(--color-mist)] p-3 text-xs text-[var(--color-ink)]/80">

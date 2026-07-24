@@ -230,7 +230,7 @@ export default function BuyerFunnel({
                 value={tradeInAddress}
                 onChange={(e) => setTradeInAddress(e.target.value)}
                 placeholder="123 Main St, Charlotte, NC"
-                className="mt-2 w-full rounded-lg border border-[var(--color-line)] px-3 py-3 text-sm"
+                className="mt-2 w-full rounded-lg border border-[var(--color-line)] bg-white px-3 py-3 text-base text-[var(--color-ink)] placeholder:text-[var(--color-ink)]/40 focus:border-[var(--color-drh-red)] focus:outline-none"
               />
               {/* TODO next turn: Google Places autocomplete bound to this input */}
             </div>
@@ -262,31 +262,61 @@ export default function BuyerFunnel({
             Where should we send the list of unreleased D.R. Horton inventory
             and standing builder incentives for {cityName}?
           </p>
-          <div className="mt-6 space-y-3">
-            <input
-              type="text"
-              required
-              placeholder="First name"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              className="w-full rounded-lg border border-[var(--color-line)] px-3 py-3 text-sm"
-            />
-            <input
-              type="tel"
-              required
-              placeholder="Phone"
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-              className="w-full rounded-lg border border-[var(--color-line)] px-3 py-3 text-sm"
-            />
-            <input
-              type="email"
-              required
-              placeholder="Email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full rounded-lg border border-[var(--color-line)] px-3 py-3 text-sm"
-            />
+          <div className="mt-6 space-y-4">
+            <div>
+              <label
+                htmlFor="lead-name"
+                className="mb-1 block text-xs font-semibold uppercase tracking-wider text-[var(--color-navy)]"
+              >
+                First name
+              </label>
+              <input
+                id="lead-name"
+                type="text"
+                required
+                autoComplete="given-name"
+                placeholder="e.g. Alex"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                className="w-full rounded-lg border border-[var(--color-line)] bg-white px-3 py-3 text-base text-[var(--color-ink)] placeholder:text-[var(--color-ink)]/40 focus:border-[var(--color-drh-red)] focus:outline-none"
+              />
+            </div>
+            <div>
+              <label
+                htmlFor="lead-phone"
+                className="mb-1 block text-xs font-semibold uppercase tracking-wider text-[var(--color-navy)]"
+              >
+                Phone
+              </label>
+              <input
+                id="lead-phone"
+                type="tel"
+                required
+                autoComplete="tel"
+                placeholder="(704) 555-1234"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                className="w-full rounded-lg border border-[var(--color-line)] bg-white px-3 py-3 text-base text-[var(--color-ink)] placeholder:text-[var(--color-ink)]/40 focus:border-[var(--color-drh-red)] focus:outline-none"
+              />
+            </div>
+            <div>
+              <label
+                htmlFor="lead-email"
+                className="mb-1 block text-xs font-semibold uppercase tracking-wider text-[var(--color-navy)]"
+              >
+                Email
+              </label>
+              <input
+                id="lead-email"
+                type="email"
+                required
+                autoComplete="email"
+                placeholder="you@example.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="w-full rounded-lg border border-[var(--color-line)] bg-white px-3 py-3 text-base text-[var(--color-ink)] placeholder:text-[var(--color-ink)]/40 focus:border-[var(--color-drh-red)] focus:outline-none"
+              />
+            </div>
           </div>
 
           <label className="mt-5 flex cursor-pointer items-start gap-3 rounded-lg bg-[var(--color-mist)] p-3 text-xs text-[var(--color-ink)]/80">
