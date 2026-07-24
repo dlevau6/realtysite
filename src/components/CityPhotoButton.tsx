@@ -4,56 +4,56 @@ import { cityLandmark, cityPhoto, type CityRef } from "@/lib/site-config";
 
 interface Props {
   city: CityRef;
-  /** Index into the parent grid — used to vary Ken Burns pan direction
-   *  so adjacent tiles don't move in lockstep. */
-  index: number;
+  /** Metro name shown as small eyebrow above city name */
+  metroName?: string;
 }
 
-const KEN_BURNS_DIRECTIONS = [
-  "ken-burns-nw",
-  "ken-burns-ne",
-  "ken-burns-sw",
-  "ken-burns-se",
-] as const;
-
-export default function CityPhotoButton({ city, index }: Props) {
-  const dir = KEN_BURNS_DIRECTIONS[index % KEN_BURNS_DIRECTIONS.length];
+/**
+ * Flat-square city photo tile with the "lakenormanrealty" rhythm — uniform
+ * aspect ratio, a subtle scale-in on hover instead of Ken Burns pan (which
+ * made adjacent tiles drift at different rates and broke the grid feel).
+ *
+ * The image itself scales; a dark bottom gradient keeps the label crisp.
+ */
+export default function CityPhotoButton({ city, metroName }: Props) {
   const landmark = cityLandmark(city.slug);
 
   return (
     <Link
       href={`/dr-horton/${city.slug}`}
-      className="group relative block aspect-[4/3] overflow-hidden rounded-2xl shadow-sm transition-shadow hover:shadow-xl focus-visible:outline-2 focus-visible:outline-[var(--color-drh-red)]"
+      className="group relative block aspect-square overflow-hidden rounded-xl shadow-sm transition-shadow hover:shadow-xl focus-visible:outline-2 focus-visible:outline-[var(--color-drh-red)]"
     >
-      {/* Photo layer with Ken Burns pan */}
-      <div className={`absolute inset-0 ${dir}`}>
+      {/* Photo — subtle 3s scale-in on hover, one uniform direction */}
+      <div className="absolute inset-0 transition-transform duration-[3000ms] ease-out group-hover:scale-110">
         <Image
           src={cityPhoto(city.slug)}
           alt={`${city.name}, NC — ${landmark || "new construction"}`}
           fill
-          sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
+          sizes="(min-width: 1024px) 25vw, (min-width: 640px) 33vw, 50vw"
           className="object-cover"
         />
       </div>
 
-      {/* Dark bottom gradient so the label stays readable on any photo */}
-      <div className="absolute inset-0 bg-gradient-to-t from-[var(--color-navy-deep)]/95 via-[var(--color-navy)]/40 to-transparent" />
+      {/* Full-height dark navy gradient — heavier at bottom for label readability */}
+      <div className="absolute inset-0 bg-gradient-to-t from-[var(--color-navy-deep)]/95 via-[var(--color-navy)]/30 to-transparent" />
 
-      {/* Red accent that intensifies on hover — the CTA signal */}
-      <div className="absolute inset-x-0 bottom-0 h-1 bg-[var(--color-drh-red)] transition-all duration-300 group-hover:h-2" />
+      {/* Red accent bar that thickens on hover (CTA cue) */}
+      <div className="absolute inset-x-0 bottom-0 h-1 bg-[var(--color-drh-red)] transition-all duration-300 group-hover:h-1.5" />
 
       {/* Label */}
-      <div className="absolute inset-x-0 bottom-0 p-5">
-        <p className="font-[family-name:var(--font-data)] text-[10px] uppercase tracking-widest text-white/70">
-          {landmark || "North Carolina"}
-        </p>
-        <div className="mt-1 flex items-center justify-between gap-2">
-          <h3 className="font-[family-name:var(--font-display)] text-xl font-bold text-white md:text-2xl">
+      <div className="absolute inset-x-0 bottom-0 p-4">
+        {metroName ? (
+          <p className="font-[family-name:var(--font-data)] text-[10px] uppercase tracking-widest text-[var(--color-carolina)]">
+            {metroName}
+          </p>
+        ) : null}
+        <div className="mt-0.5 flex items-center justify-between gap-2">
+          <h3 className="font-[family-name:var(--font-display)] text-lg font-bold text-white leading-tight">
             {city.name}
           </h3>
           <span
             aria-hidden
-            className="translate-x-0 text-2xl text-white/90 transition-transform duration-300 group-hover:translate-x-1"
+            className="text-xl text-white/90 transition-transform duration-300 group-hover:translate-x-1"
           >
             →
           </span>

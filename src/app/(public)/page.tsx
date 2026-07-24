@@ -87,6 +87,63 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* Section 2.5: Choose your path — routes visitors to the right
+          landing page based on buyer type. Also gives SEO internal
+          linking love to the three funnels. */}
+      <section className="bg-white py-16">
+        <div className="mx-auto max-w-6xl px-6">
+          <div className="text-center">
+            <p className="font-[family-name:var(--font-data)] text-xs uppercase tracking-widest text-[var(--color-drh-red)]">
+              Where are you in the process?
+            </p>
+            <h2 className="mt-2 font-[family-name:var(--font-display)] text-3xl font-bold text-[var(--color-navy)] md:text-4xl">
+              Choose your path
+            </h2>
+          </div>
+          <div className="mt-10 grid gap-4 md:grid-cols-3">
+            {[
+              {
+                href: "/community-discovery",
+                eyebrow: "Researching",
+                title: "Explore new construction communities",
+                body: "Browse D.R. Horton communities, floor plans, and pricing across 14 NC markets.",
+              },
+              {
+                href: "/incentives",
+                eyebrow: "Ready to buy",
+                title: "See current builder incentives",
+                body: "Closing cost programs, DHI Mortgage financing, and $0-down options.",
+              },
+              {
+                href: "/rent-vs-own",
+                eyebrow: "Currently renting",
+                title: "Stop renting — compare rent vs. own",
+                body: "Interactive calculator and Free Buying Power Report for first-time buyers.",
+              },
+            ].map((tile) => (
+              <a
+                key={tile.href}
+                href={tile.href}
+                className="group flex flex-col rounded-2xl border-2 border-[var(--color-line)] bg-white p-6 transition-all hover:-translate-y-0.5 hover:border-[var(--color-drh-red)] hover:shadow-md"
+              >
+                <p className="font-[family-name:var(--font-data)] text-xs uppercase tracking-widest text-[var(--color-teal)]">
+                  {tile.eyebrow}
+                </p>
+                <h3 className="mt-2 font-[family-name:var(--font-display)] text-xl font-bold text-[var(--color-navy)]">
+                  {tile.title}
+                </h3>
+                <p className="mt-2 flex-1 text-sm text-[var(--color-ink)]/80">
+                  {tile.body}
+                </p>
+                <p className="mt-4 font-[family-name:var(--font-display)] text-sm font-bold text-[var(--color-drh-red)] transition-transform group-hover:translate-x-1">
+                  Learn more →
+                </p>
+              </a>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Section 3: 14 city buttons grouped by metro cluster */}
       <section id="find-your-city" className="bg-white py-20">
         <div className="mx-auto max-w-6xl px-6">
@@ -97,36 +154,16 @@ export default function HomePage() {
             Find D.R. Horton new construction homes by city
           </h2>
 
-          <div className="mt-10 space-y-12">
-            {SITE.metros.map((metro) => {
-              // Compute a running index across all metros so Ken Burns
-              // direction cycles smoothly through the whole page rather
-              // than resetting per metro cluster.
-              const priorCityCount = SITE.metros
-                .slice(0, SITE.metros.indexOf(metro))
-                .reduce((acc, m) => acc + m.cities.length, 0);
-              return (
-                <div key={metro.slug}>
-                  <div className="mb-5">
-                    <h3 className="font-[family-name:var(--font-display)] text-xl font-bold text-[var(--color-navy)]">
-                      {metro.name}
-                    </h3>
-                    <p className="text-sm text-[var(--color-ink)]/70">
-                      {metro.blurb}
-                    </p>
-                  </div>
-                  <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                    {metro.cities.map((city, i) => (
-                      <CityPhotoButton
-                        key={city.slug}
-                        city={city}
-                        index={priorCityCount + i}
-                      />
-                    ))}
-                  </div>
-                </div>
-              );
-            })}
+          <div className="mt-8 grid gap-4 grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+            {SITE.metros.flatMap((metro) =>
+              metro.cities.map((city) => (
+                <CityPhotoButton
+                  key={city.slug}
+                  city={city}
+                  metroName={metro.name}
+                />
+              ))
+            )}
           </div>
         </div>
       </section>
