@@ -149,3 +149,49 @@ export function mapSparkListingToRow(listing: SparkListing) {
     last_synced_at: new Date().toISOString(),
   };
 }
+
+/**
+ * Fetch a small batch of active listings without an office filter — used
+ * to power the "Featured listings" strip on the homepage. Works with the
+ * demo access token during development (which returns example data).
+ *
+ * Returns an empty array on ANY failure (missing env var, API error,
+ * malformed response, no results) so the calling component can render
+ * a graceful empty state instead of crashing the page.
+ */
+export async function fetchFeaturedListings({
+  pageSize = 6,
+}: { pageSize?: number } = {}): Promise<SparkListing[]> {
+  const token = process.env.SPARK_ACCESS_TOKEN;
+  if (!token) return [];
+
+  try {
+    const url = new URL(`${SPARK_BASE_URL}/listings`);
+    url.searchParams.set("_filter", "StandardStatus Eq 'Active'");
+    url.searchParams.set("_pagesize", String(pageSize));
+    url.searchParams.set("_expand", "Photos");
+
+    const res = await fetch(url.toString(), {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Accept: "application/json",
+      },
+      // Cache at the edge for 10 minutes — MLS demo data doesn't move,
+      // and even real IDX rules allow modest caching.
+      next: { revalidate: 600 },
+    });
+
+    if (!res.ok) {
+      console.warn(`Spark demo fetch: ${res.status} ${res.statusText}`);
+      return [];
+    }
+
+    const data = (await res.json()) as SparkListResponse;
+    return data.D?.Results ?? [];
+  } catch (err) {
+    console.warn("Spark demo fetch failed:", err);
+    return [];
+  }
+}
+
+export type { SparkListing };

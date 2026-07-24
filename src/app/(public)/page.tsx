@@ -6,6 +6,7 @@ import RotatingHero from "@/components/RotatingHero";
 import StickyCallButton from "@/components/StickyCallButton";
 import CityPhotoButton from "@/components/CityPhotoButton";
 import CommunityTileButton from "@/components/CommunityTileButton";
+import FeaturedListings from "@/components/FeaturedListings";
 import { SITE, TRUST_LINE } from "@/lib/site-config";
 import { getFeaturedCommunities } from "@/lib/communities";
 
@@ -189,6 +190,11 @@ export default function HomePage() {
           </div>
         </section>
       ) : null}
+
+      {/* Section 4.5: Live IDX listings pulled from Spark. Renders
+          nothing gracefully if the API returns empty or the token is
+          missing — safe to leave on even in states before MLS approval. */}
+      <FeaturedListings />
 
       {/* Section 5: Why buy new with a buyer's agent (trust builder) */}
       <section className="bg-white py-20">
