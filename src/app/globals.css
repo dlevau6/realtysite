@@ -71,6 +71,31 @@ h1, h2, h3, h4 {
   animation: hero-fade 32s linear infinite;
 }
 
+/* Ken Burns effect for city photo buttons — slow zoom+pan that gives the
+   tiles a subtle sense of life without being distracting. Four direction
+   variants (nw / ne / sw / se) cycle across the grid so adjacent tiles
+   drift differently and the row doesn't move in lockstep. */
+@keyframes ken-burns-nw {
+  0%   { transform: scale(1.05) translate(0, 0); }
+  100% { transform: scale(1.20) translate(-2%, -2%); }
+}
+@keyframes ken-burns-ne {
+  0%   { transform: scale(1.05) translate(0, 0); }
+  100% { transform: scale(1.20) translate(2%, -2%); }
+}
+@keyframes ken-burns-sw {
+  0%   { transform: scale(1.05) translate(0, 0); }
+  100% { transform: scale(1.20) translate(-2%, 2%); }
+}
+@keyframes ken-burns-se {
+  0%   { transform: scale(1.05) translate(0, 0); }
+  100% { transform: scale(1.20) translate(2%, 2%); }
+}
+.ken-burns-nw { animation: ken-burns-nw 22s ease-in-out infinite alternate; }
+.ken-burns-ne { animation: ken-burns-ne 22s ease-in-out infinite alternate; }
+.ken-burns-sw { animation: ken-burns-sw 22s ease-in-out infinite alternate; }
+.ken-burns-se { animation: ken-burns-se 22s ease-in-out infinite alternate; }
+
 /* Respect reduced-motion preferences site-wide */
 @media (prefers-reduced-motion: reduce) {
   * {

@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { notFound } from "next/navigation";
+import Link from "next/link";
 import BuyerFunnel from "@/components/BuyerFunnel";
+import CommunityTileButton from "@/components/CommunityTileButton";
 import {
   ALL_CITIES,
   SITE,
@@ -10,11 +11,7 @@ import {
   getCityBySlug,
   getMetroForCity,
 } from "@/lib/site-config";
-import {
-  getCommunitiesForCity,
-  statusLabel,
-  type CommunityStatus,
-} from "@/lib/communities";
+import { getCommunitiesForCity } from "@/lib/communities";
 
 export function generateStaticParams() {
   return ALL_CITIES.map((city) => ({ city: city.slug }));
@@ -33,34 +30,6 @@ export async function generateMetadata({
     description: `See available D.R. Horton communities in ${city.name}, NC — real starting prices, current status, and move-in dates. Free, no obligation, matches in 60 seconds.`,
   };
 }
-
-// Status-aware button styling. Green = selling, amber = coming soon/final,
-// gray = verify.
-const statusStyle: Record<
-  Exclude<CommunityStatus, "sold-out">,
-  { border: string; text: string; badge: string }
-> = {
-  selling: {
-    border: "border-emerald-500",
-    text: "text-emerald-700",
-    badge: "bg-emerald-500 text-white",
-  },
-  "coming-soon": {
-    border: "border-amber-500",
-    text: "text-amber-700",
-    badge: "bg-amber-500 text-white",
-  },
-  "final-homes": {
-    border: "border-amber-500",
-    text: "text-amber-700",
-    badge: "bg-amber-500 text-white",
-  },
-  verify: {
-    border: "border-[var(--color-line)]",
-    text: "text-[var(--color-ink)]/60",
-    badge: "bg-[var(--color-ink)]/10 text-[var(--color-ink)]/70",
-  },
-};
 
 export default async function CityPage({
   params,
@@ -142,51 +111,9 @@ export default async function CityPage({
             </p>
           ) : (
             <div className="mt-8 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-              {activeCommunities.map((c) => {
-                const style =
-                  c.status === "sold-out"
-                    ? statusStyle["verify"]
-                    : statusStyle[c.status];
-                const ctaLabel =
-                  c.status === "selling"
-                    ? "See available homes"
-                    : c.status === "coming-soon"
-                      ? "Join the first-to-know list"
-                      : c.status === "final-homes"
-                        ? "See final homes"
-                        : "Ask about availability";
-                return (
-                  <Link
-                    key={c.slug}
-                    href={`/dr-horton/${city.slug}/${c.slug}`}
-                    className={`group flex flex-col rounded-2xl border-2 bg-white p-6 shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md ${style.border}`}
-                  >
-                    <div className="flex items-start justify-between gap-3">
-                      <span
-                        className={`inline-block rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider ${style.badge}`}
-                      >
-                        {statusLabel(c.status)}
-                      </span>
-                    </div>
-                    <h3 className="mt-4 font-[family-name:var(--font-display)] text-xl font-bold text-[var(--color-navy)]">
-                      {c.name}
-                    </h3>
-                    {c.startingPrice ? (
-                      <p className="mt-1 font-[family-name:var(--font-data)] text-sm font-bold text-[var(--color-drh-red)]">
-                        {c.startingPrice}
-                      </p>
-                    ) : null}
-                    {c.descriptor ? (
-                      <p className="mt-2 text-sm text-[var(--color-ink)]/70">
-                        {c.descriptor}
-                      </p>
-                    ) : null}
-                    <p className={`mt-4 text-sm font-semibold ${style.text} transition-colors group-hover:text-[var(--color-drh-red)]`}>
-                      {ctaLabel} →
-                    </p>
-                  </Link>
-                );
-              })}
+              {activeCommunities.map((c) => (
+                <CommunityTileButton key={c.slug} community={c} />
+              ))}
             </div>
           )}
 

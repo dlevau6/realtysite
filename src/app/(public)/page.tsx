@@ -4,6 +4,8 @@ import Link from "next/link";
 import BuyerFunnel from "@/components/BuyerFunnel";
 import RotatingHero from "@/components/RotatingHero";
 import StickyCallButton from "@/components/StickyCallButton";
+import CityPhotoButton from "@/components/CityPhotoButton";
+import CommunityTileButton from "@/components/CommunityTileButton";
 import { SITE, TRUST_LINE } from "@/lib/site-config";
 import { getFeaturedCommunities } from "@/lib/communities";
 
@@ -95,42 +97,36 @@ export default function HomePage() {
             Find D.R. Horton new construction homes by city
           </h2>
 
-          <div className="mt-10 space-y-10">
-            {SITE.metros.map((metro) => (
-              <div key={metro.slug}>
-                <div className="mb-4">
-                  <h3 className="font-[family-name:var(--font-display)] text-lg font-bold text-[var(--color-navy)]">
-                    {metro.name}
-                  </h3>
-                  <p className="text-sm text-[var(--color-ink)]/70">{metro.blurb}</p>
+          <div className="mt-10 space-y-12">
+            {SITE.metros.map((metro) => {
+              // Compute a running index across all metros so Ken Burns
+              // direction cycles smoothly through the whole page rather
+              // than resetting per metro cluster.
+              const priorCityCount = SITE.metros
+                .slice(0, SITE.metros.indexOf(metro))
+                .reduce((acc, m) => acc + m.cities.length, 0);
+              return (
+                <div key={metro.slug}>
+                  <div className="mb-5">
+                    <h3 className="font-[family-name:var(--font-display)] text-xl font-bold text-[var(--color-navy)]">
+                      {metro.name}
+                    </h3>
+                    <p className="text-sm text-[var(--color-ink)]/70">
+                      {metro.blurb}
+                    </p>
+                  </div>
+                  <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                    {metro.cities.map((city, i) => (
+                      <CityPhotoButton
+                        key={city.slug}
+                        city={city}
+                        index={priorCityCount + i}
+                      />
+                    ))}
+                  </div>
                 </div>
-                <div
-                  className={`grid gap-3 ${
-                    metro.cities.length === 1
-                      ? "md:grid-cols-3"
-                      : metro.cities.length === 2
-                        ? "md:grid-cols-2"
-                        : "md:grid-cols-3"
-                  }`}
-                >
-                  {metro.cities.map((city) => (
-                    <Link
-                      key={city.slug}
-                      href={`/dr-horton/${city.slug}`}
-                      className="group flex items-center justify-between rounded-xl border-2 border-[var(--color-line)] bg-white px-5 py-4 font-[family-name:var(--font-display)] font-bold text-[var(--color-navy)] transition-all hover:-translate-y-0.5 hover:border-[var(--color-drh-red)] hover:shadow-md"
-                    >
-                      <span>{city.name}</span>
-                      <span
-                        aria-hidden
-                        className="text-[var(--color-ink)]/40 transition-colors group-hover:text-[var(--color-drh-red)]"
-                      >
-                        →
-                      </span>
-                    </Link>
-                  ))}
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </section>
@@ -147,26 +143,10 @@ export default function HomePage() {
             </h2>
             <div className="mt-8 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
               {featured.map((c) => (
-                <Link
+                <CommunityTileButton
                   key={`${c.citySlug}-${c.slug}`}
-                  href={`/dr-horton/${c.citySlug}/${c.slug}`}
-                  className="group flex flex-col rounded-2xl border-2 border-emerald-500 bg-white p-6 shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md"
-                >
-                  <span className="inline-block w-fit rounded-full bg-emerald-500 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-white">
-                    Selling now
-                  </span>
-                  <h3 className="mt-4 font-[family-name:var(--font-display)] text-xl font-bold text-[var(--color-navy)]">
-                    See available homes in {c.name}
-                  </h3>
-                  <p className="mt-1 font-[family-name:var(--font-data)] text-sm font-bold text-[var(--color-drh-red)]">
-                    {c.startingPrice}
-                  </p>
-                  {c.descriptor ? (
-                    <p className="mt-2 text-sm text-[var(--color-ink)]/70">
-                      {c.descriptor}
-                    </p>
-                  ) : null}
-                </Link>
+                  community={c}
+                />
               ))}
             </div>
           </div>

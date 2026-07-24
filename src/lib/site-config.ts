@@ -158,3 +158,48 @@ export function cityLandmark(citySlug: string): string {
   };
   return map[citySlug] ?? "";
 }
+
+/**
+ * Background photo URL for each city button. Currently uses generic
+ * Unsplash stock — replace with Eric's own photography or licensed
+ * NC-specific stock before real launch.
+ *
+ * We alternate landmarks (skylines, lake shots, greenways, downtowns)
+ * to give the 14 buttons visual variety when displayed together.
+ */
+export function cityPhoto(citySlug: string): string {
+  const map: Record<string, string> = {
+    charlotte:
+      "https://images.unsplash.com/photo-1519659528534-7fd733a832a0?w=1600&auto=format&fit=crop&q=80",
+    huntersville:
+      "https://images.unsplash.com/photo-1499856871958-5b9627545d1a?w=1600&auto=format&fit=crop&q=80",
+    concord:
+      "https://images.unsplash.com/photo-1568844293986-8d0400bd4745?w=1600&auto=format&fit=crop&q=80",
+    kannapolis:
+      "https://images.unsplash.com/photo-1531058020387-3be344556be6?w=1600&auto=format&fit=crop&q=80",
+    "indian-trail":
+      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1600&auto=format&fit=crop&q=80",
+    monroe:
+      "https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=1600&auto=format&fit=crop&q=80",
+    mooresville:
+      "https://images.unsplash.com/photo-1613977257363-707ba9348227?w=1600&auto=format&fit=crop&q=80",
+    troutman:
+      "https://images.unsplash.com/photo-1502082553048-f009c37129b9?w=1600&auto=format&fit=crop&q=80",
+    statesville:
+      "https://images.unsplash.com/photo-1449844908441-8829872d2607?w=1600&auto=format&fit=crop&q=80",
+    denver:
+      "https://images.unsplash.com/photo-1499856871958-5b9627545d1a?w=1600&auto=format&fit=crop&q=80",
+    "sherrills-ford":
+      "https://images.unsplash.com/photo-1523472721958-3b4a17a3a72f?w=1600&auto=format&fit=crop&q=80",
+    hickory:
+      "https://images.unsplash.com/photo-1519681393784-d120267933ba?w=1600&auto=format&fit=crop&q=80",
+    raleigh:
+      "https://images.unsplash.com/photo-1608096275195-01e2d3f8c1f8?w=1600&auto=format&fit=crop&q=80",
+    durham:
+      "https://images.unsplash.com/photo-1541423408874-99f27e93b12d?w=1600&auto=format&fit=crop&q=80",
+  };
+  return (
+    map[citySlug] ??
+    "https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=1600&auto=format&fit=crop&q=80"
+  );
+}
