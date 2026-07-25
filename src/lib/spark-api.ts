@@ -101,6 +101,39 @@ export async function fetchFeaturedListings({
 }
 
 /**
+ * Fetch a single listing by its Spark Id. Returns null on any failure
+ * (missing token, network error, 404, malformed response) so the
+ * calling page can render a graceful notFound instead of crashing.
+ */
+export async function fetchListingById(
+  id: string
+): Promise<SparkListing | null> {
+  const token = process.env.SPARK_ACCESS_TOKEN;
+  if (!token) return null;
+
+  try {
+    const url = new URL(`${SPARK_BASE_URL}/listings/${encodeURIComponent(id)}`);
+    url.searchParams.set("_expand", "Photos");
+
+    const res = await fetch(url.toString(), {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Accept: "application/json",
+      },
+      next: { revalidate: 300 },
+    });
+
+    if (!res.ok) return null;
+
+    const data = (await res.json()) as SparkListResponse;
+    return data.D?.Results?.[0] ?? null;
+  } catch (err) {
+    console.warn(`Spark listing fetch failed for ${id}:`, err);
+    return null;
+  }
+}
+
+/**
  * Office-scoped fetch — used once Eric's MLS approval lands and we have
  * a real SPARK_OFFICE_ID. Applies the IDX participation filter that MLS
  * display rules require.

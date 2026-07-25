@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import { fetchFeaturedListings } from "@/lib/spark-api";
 
 const money = (n: number) =>
@@ -62,9 +63,10 @@ export default async function FeaturedListings() {
             const sqft = f.BuildingAreaTotal;
 
             return (
-              <article
+              <Link
                 key={listing.Id}
-                className="group overflow-hidden rounded-2xl border border-[var(--color-line)] bg-white shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md"
+                href={`/listings/${listing.Id}`}
+                className="group block overflow-hidden rounded-2xl border border-[var(--color-line)] bg-white shadow-sm transition-all hover:-translate-y-0.5 hover:border-[var(--color-drh-red)] hover:shadow-md focus-visible:outline-2 focus-visible:outline-[var(--color-drh-red)]"
               >
                 <div className="relative aspect-[4/3] bg-[var(--color-mist)]">
                   {photo ? (
@@ -122,8 +124,12 @@ export default async function FeaturedListings() {
                       Courtesy of {f.ListOfficeName}
                     </p>
                   ) : null}
+                  <p className="mt-3 flex items-center gap-1 font-[family-name:var(--font-display)] text-sm font-bold text-[var(--color-drh-red)] transition-transform group-hover:translate-x-1">
+                    See details
+                    <span aria-hidden>→</span>
+                  </p>
                 </div>
-              </article>
+              </Link>
             );
           })}
         </div>
