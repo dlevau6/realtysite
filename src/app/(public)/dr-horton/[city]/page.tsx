@@ -184,6 +184,68 @@ export default async function CityPage({
         </section>
       ) : null}
 
+      {/* Community groups — Eric's per-city D.R. Horton community writeups
+          from his July 2026 city guides. This is the second per-city
+          unique content block; between this and the highlights above,
+          each city page carries 400-600 words of genuinely distinct
+          content that keeps Google from treating them as templated. */}
+      {content?.communityGroups && content.communityGroups.length > 0 ? (
+        <section className="bg-white py-16">
+          <div className="mx-auto max-w-5xl px-6">
+            <p className="font-[family-name:var(--font-data)] text-xs uppercase tracking-widest text-[var(--color-drh-red)]">
+              About the communities
+            </p>
+            <h2 className="mt-2 font-[family-name:var(--font-display)] text-3xl font-bold text-[var(--color-navy)]">
+              D.R. Horton communities in {city.name}
+            </h2>
+            <div className="mt-8 space-y-6">
+              {content.communityGroups.map((group) => (
+                <div
+                  key={group.name}
+                  className="rounded-2xl border border-[var(--color-line)] bg-[var(--color-mist)] p-6 md:p-8"
+                >
+                  <div className="flex flex-wrap items-baseline justify-between gap-2">
+                    <h3 className="font-[family-name:var(--font-display)] text-xl font-bold text-[var(--color-navy)]">
+                      {group.name}
+                    </h3>
+                    {group.drHortonUrl ? (
+                      <a
+                        href={group.drHortonUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="font-[family-name:var(--font-data)] text-xs font-semibold uppercase tracking-wider text-[var(--color-drh-red)] hover:underline"
+                      >
+                        drhorton.com ↗
+                      </a>
+                    ) : null}
+                  </div>
+                  <ul className="mt-4 space-y-2">
+                    {group.bullets.map((bullet) => (
+                      <li
+                        key={bullet}
+                        className="flex gap-2 text-sm text-[var(--color-ink)]/85"
+                      >
+                        <span
+                          aria-hidden
+                          className="mt-1 text-[var(--color-drh-red)]"
+                        >
+                          •
+                        </span>
+                        <span>{bullet}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+            </div>
+            <p className="mt-6 text-xs text-[var(--color-ink)]/50">
+              Inventory, pricing, and incentives change monthly. Always verify on
+              the D.R. Horton community page before quoting.
+            </p>
+          </div>
+        </section>
+      ) : null}
+
       {/* The 1.5% listing value prop — his differentiator */}
       <section className="border-y border-[var(--color-line)] bg-[var(--color-teal-soft)] py-14">
         <div className="mx-auto max-w-4xl px-6 text-center">
