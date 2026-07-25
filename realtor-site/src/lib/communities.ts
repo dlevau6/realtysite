@@ -46,6 +46,9 @@ export const COMMUNITIES: Community[] = [
   // CONCORD
   { slug: "skybrook-corners-townhomes", name: "Skybrook Corners Townhomes", citySlug: "concord", status: "verify", descriptor: "Confirm selling status before launch" },
 
+  // KANNAPOLIS
+  { slug: "frontier-pointe", name: "Frontier Pointe", citySlug: "kannapolis", status: "selling", descriptor: "Confirm pricing at launch" },
+
   // INDIAN TRAIL
   { slug: "sanctuary-at-southgate", name: "Sanctuary at Southgate", citySlug: "indian-trail", status: "selling", startingPrice: "from the mid $300s", descriptor: "Single-family" },
   { slug: "sanctuary-at-southgate-townhomes", name: "Sanctuary at Southgate Townhomes", citySlug: "indian-trail", status: "selling", startingPrice: "from the mid $300s", descriptor: "Townhomes" },
@@ -73,6 +76,16 @@ export const COMMUNITIES: Community[] = [
   { slug: "sylvan-creek", name: "Sylvan Creek", citySlug: "denver", status: "selling", startingPrice: "from the low $400s" },
   { slug: "second-denver-community", name: "Second Denver community", citySlug: "denver", status: "verify", descriptor: "Name pending verification" },
 
+  // SHERRILLS FORD
+  { slug: "chestnut-at-laurelbrook", name: "Chestnut at Laurelbrook", citySlug: "sherrills-ford", status: "selling", startingPrice: "from the low $300s", descriptor: "2-5 beds, resort amenities" },
+  { slug: "sherrills-stream", name: "Sherrill's Stream", citySlug: "sherrills-ford", status: "verify", descriptor: "Confirm pricing and availability" },
+  { slug: "blackstone-bay-townhomes", name: "Blackstone Bay Townhomes", citySlug: "sherrills-ford", status: "sold-out" },
+
+  // HICKORY
+  { slug: "falls-at-hickory", name: "Falls at Hickory", citySlug: "hickory", status: "selling", startingPrice: "from the mid $300s" },
+  { slug: "huffman-ridge", name: "Huffman Ridge", citySlug: "hickory", status: "selling", startingPrice: "from the high $200s", descriptor: "Near I-40 and Hwy 321" },
+  { slug: "trivium-meadows", name: "Trivium Meadows", citySlug: "hickory", status: "verify", descriptor: "Confirm status before launch" },
+
   // RALEIGH
   { slug: "barwell-park", name: "Barwell Park", citySlug: "raleigh", status: "selling", startingPrice: "from the low $360s", descriptor: "Single-family, SE Raleigh" },
   { slug: "thornton-townes", name: "Thornton Townes", citySlug: "raleigh", status: "selling", startingPrice: "from the high $200s", descriptor: "Townhomes, N Raleigh" },
@@ -84,39 +97,6 @@ export const COMMUNITIES: Community[] = [
   { slug: "fletchers-mill", name: "Fletchers Mill", citySlug: "durham", status: "sold-out" },
   { slug: "trevino-townes", name: "Trevino Townes", citySlug: "durham", status: "sold-out" },
   { slug: "nichols-farm", name: "Nichols Farm", citySlug: "durham", status: "sold-out" },
-
-  // FUQUAY-VARINA
-  { slug: "woodgrove", name: "Woodgrove", citySlug: "fuquay-varina", status: "selling", startingPrice: "from the mid $300s", descriptor: "230 homes, pool and cabana off US-401" },
-  { slug: "madden-west", name: "Madden West", citySlug: "fuquay-varina", status: "selling", startingPrice: "from the mid $300s", descriptor: "Beckett, Haywood, Wesley plans" },
-  { slug: "the-townes-at-madden-west", name: "The Townes at Madden West", citySlug: "fuquay-varina", status: "selling", startingPrice: "from the low $230s", descriptor: "Triangle's entry-level benchmark" },
-
-  // CLAYTON
-  { slug: "clayton-27520-cluster", name: "Clayton 27520 community cluster", citySlug: "clayton", status: "verify", startingPrice: "from around $304K", descriptor: "Six-plus communities — confirm individual names" },
-
-  // WILMINGTON
-  { slug: "sidbury-station", name: "Sidbury Station", citySlug: "wilmington", status: "selling", startingPrice: "from the low $330s", descriptor: "North Wilmington master-planned" },
-  { slug: "the-grove-at-blake-farm", name: "The Grove at Blake Farm", citySlug: "wilmington", status: "selling", startingPrice: "from the high $200s", descriptor: "Wilmington-Hampstead corridor" },
-  { slug: "cape-fear-riverfront-townhomes", name: "Cape Fear riverfront community", citySlug: "wilmington", status: "verify", descriptor: "Pleasure Island gateway — confirm name and pricing" },
-
-  // LELAND
-  { slug: "grayson-park", name: "Grayson Park", citySlug: "leland", status: "selling", startingPrice: "from the mid $300s", descriptor: "Established, pool and sidewalks" },
-  { slug: "vineyard-grove", name: "Vineyard Grove", citySlug: "leland", status: "verify", descriptor: "Newest Leland neighborhood — confirm pricing" },
-
-  // BOLIVIA
-  { slug: "bella-point", name: "Bella Point", citySlug: "bolivia", status: "selling", startingPrice: "from the high $200s", descriptor: "Central Brunswick County" },
-  { slug: "eagle-creek", name: "Eagle Creek", citySlug: "bolivia", status: "selling", startingPrice: "from the mid $200s", descriptor: "Beach access in three directions" },
-
-  // WINSTON-SALEM
-  { slug: "fiddlers-landing", name: "Fiddlers Landing", citySlug: "winston-salem", status: "selling", startingPrice: "from the low $300s", descriptor: "5.2 mi from downtown", drHortonUrl: "https://www.drhorton.com/north-carolina/greensboro-winston-salem/winston-salem/fiddlers-landing" },
-  { slug: "fishel-village", name: "Fishel Village", citySlug: "winston-salem", status: "selling", startingPrice: "from the high $200s", descriptor: "South Winston-Salem (27107)" },
-  { slug: "winston-salem-townhomes", name: "Winston-Salem townhome community", citySlug: "winston-salem", status: "verify", startingPrice: "from the low $240s", descriptor: "Confirm name before launch" },
-
-  // KERNERSVILLE
-  { slug: "glennview", name: "Glennview", citySlug: "kernersville", status: "selling", startingPrice: "from the mid $200s", descriptor: "3-5 beds, I-40 corridor" },
-  { slug: "the-grove-at-glennview", name: "The Grove at Glennview", citySlug: "kernersville", status: "selling", startingPrice: "from the high $200s", descriptor: "Sister community, early phases" },
-
-  // FAYETTEVILLE
-  { slug: "fayetteville-metro-cluster", name: "Fayetteville metro communities (28306/28311)", citySlug: "fayetteville", status: "verify", descriptor: "Five-plus communities, VA-loan sweet spot — confirm individual names" },
 ];
 
 export function getCommunitiesForCity(citySlug: string): Community[] {

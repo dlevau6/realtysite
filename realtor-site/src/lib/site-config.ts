@@ -22,9 +22,9 @@ export const SITE = {
 
   tagline: "Your D.R. Horton new construction specialist",
   headline:
-    "Your D.R. Horton new construction specialist for Charlotte, Lake Norman, the Triangle, the Triad, the Cape Fear coast and the Sandhills.",
+    "Your D.R. Horton new construction specialist for Charlotte, Lake Norman and the Triangle.",
   description:
-    "Eric Fisher — LakeNormanRealtor1 — is your D.R. Horton new construction specialist across 19 North Carolina cities. See available floor plans, pricing, and move-in dates. List with us for only 1.5% when you buy a new D.R. Horton home.",
+    "Eric Fisher — LakeNormanRealtor1 — is your D.R. Horton new construction specialist across 14 North Carolina cities. See available floor plans, pricing, and move-in dates. List with us for only 1.5% when you buy a new D.R. Horton home.",
 
   // The signature value prop — his differentiator vs any other agent.
   listingRatePromise: {
@@ -45,11 +45,8 @@ export const SITE = {
 
   url: "https://www.drhortonnchomes.com",
 
-  // 19 cities organized into six metro clusters, per Eric's July 2026
-  // guide (ALL-19-Cities-DR-Horton-Master-Guide.docx). Replaces the prior
-  // 14-city list: drops Hickory, Kannapolis, Sherrills Ford; adds Bolivia,
-  // Clayton, Fayetteville, Fuquay-Varina, Kernersville, Leland, Wilmington,
-  // Winston-Salem. Order inside each cluster follows Eric's #1-#19 ranking.
+  // 14 cities organized into the four metro clusters from the spec doc's
+  // Section 2. The order inside each cluster matches the spec table.
   metros: [
     {
       slug: "charlotte-metro",
@@ -57,10 +54,11 @@ export const SITE = {
       blurb: "Uptown, banking, sports, restaurants — the fastest-growing metro in the Southeast.",
       cities: [
         { slug: "charlotte", name: "Charlotte" },
-        { slug: "monroe", name: "Monroe" },
-        { slug: "concord", name: "Concord" },
         { slug: "huntersville", name: "Huntersville" },
+        { slug: "concord", name: "Concord" },
+        { slug: "kannapolis", name: "Kannapolis" },
         { slug: "indian-trail", name: "Indian Trail" },
+        { slug: "monroe", name: "Monroe" },
       ],
     },
     {
@@ -72,43 +70,23 @@ export const SITE = {
         { slug: "troutman", name: "Troutman" },
         { slug: "statesville", name: "Statesville" },
         { slug: "denver", name: "Denver" },
+        { slug: "sherrills-ford", name: "Sherrills Ford" },
       ],
+    },
+    {
+      slug: "catawba-valley",
+      name: "Catawba Valley",
+      blurb: "Foothills, furniture heritage, and value pricing.",
+      cities: [{ slug: "hickory", name: "Hickory" }],
     },
     {
       slug: "triangle",
       name: "Research Triangle",
-      blurb: "Raleigh, Durham, Fuquay-Varina, Clayton — top-ranked schools and job growth.",
+      blurb: "Raleigh, Durham, RTP — top-ranked schools and job growth.",
       cities: [
         { slug: "raleigh", name: "Raleigh" },
         { slug: "durham", name: "Durham" },
-        { slug: "fuquay-varina", name: "Fuquay-Varina" },
-        { slug: "clayton", name: "Clayton" },
       ],
-    },
-    {
-      slug: "cape-fear-coast",
-      name: "Cape Fear coast",
-      blurb: "Wilmington, Leland, Bolivia — coastal living from the mid $200Ks.",
-      cities: [
-        { slug: "wilmington", name: "Wilmington" },
-        { slug: "leland", name: "Leland" },
-        { slug: "bolivia", name: "Bolivia" },
-      ],
-    },
-    {
-      slug: "piedmont-triad",
-      name: "Piedmont Triad",
-      blurb: "Winston-Salem and Kernersville — arts, biotech, and the Toyota megasite corridor.",
-      cities: [
-        { slug: "winston-salem", name: "Winston-Salem" },
-        { slug: "kernersville", name: "Kernersville" },
-      ],
-    },
-    {
-      slug: "sandhills",
-      name: "Sandhills",
-      blurb: "Fayetteville — Fort Liberty and VA-loan-friendly new construction.",
-      cities: [{ slug: "fayetteville", name: "Fayetteville" }],
     },
   ],
 } as const;
@@ -166,49 +144,62 @@ export function cityLandmark(citySlug: string): string {
     charlotte: "Uptown skyline",
     huntersville: "Lake Norman greenway",
     concord: "Charlotte Motor Speedway area",
+    kannapolis: "Downtown ballpark district",
     "indian-trail": "Union County suburbs",
     monroe: "Historic downtown",
     mooresville: "Race City lakefront",
     troutman: "Lake Norman State Park",
     statesville: "Historic courthouse",
     denver: "Lake Norman west shore",
+    "sherrills-ford": "Lakeside marina",
+    hickory: "Foothills and downtown",
     raleigh: "State capitol district",
     durham: "American Tobacco Campus",
-    "fuquay-varina": "Historic Main Street",
-    clayton: "Downtown Clayton",
-    wilmington: "Riverwalk and Cape Fear River",
-    leland: "Brunswick riverfront",
-    bolivia: "Brunswick County coast",
-    "winston-salem": "Old Salem historic district",
-    kernersville: "Körner's Folly district",
-    fayetteville: "Segra Stadium downtown",
   };
   return map[citySlug] ?? "";
 }
 
 /**
- * Background photo URL for each city button. Uses a small pool of known-
- * working Unsplash IDs (the same ones RotatingHero uses in the hero) —
- * previous mapping had made-up IDs that 404'd on Unsplash's CDN.
+ * Background photo URL for each city button. Currently uses generic
+ * Unsplash stock — replace with Eric's own photography or licensed
+ * NC-specific stock before real launch.
  *
- * TODO before real launch: swap for Eric's licensed photography or NC-
- * specific stock, per Section 5 of the spec. Photos are intentionally
- * generic homes/landscapes right now, not city landmarks.
+ * We alternate landmarks (skylines, lake shots, greenways, downtowns)
+ * to give the 14 buttons visual variety when displayed together.
  */
 export function cityPhoto(citySlug: string): string {
-  const pool = [
-    "https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=1600&auto=format&fit=crop&q=80",
-    "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1600&auto=format&fit=crop&q=80",
-    "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=1600&auto=format&fit=crop&q=80",
-    "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=1600&auto=format&fit=crop&q=80",
-    "https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=1600&auto=format&fit=crop&q=80",
-    "https://images.unsplash.com/photo-1519659528534-7fd733a832a0?w=1600&auto=format&fit=crop&q=80",
-    "https://images.unsplash.com/photo-1499856871958-5b9627545d1a?w=1600&auto=format&fit=crop&q=80",
-  ];
-  // Deterministic hash of the slug so a given city always maps to the same photo.
-  let hash = 0;
-  for (let i = 0; i < citySlug.length; i++) {
-    hash = (hash * 31 + citySlug.charCodeAt(i)) >>> 0;
-  }
-  return pool[hash % pool.length];
+  const map: Record<string, string> = {
+    charlotte:
+      "https://images.unsplash.com/photo-1519659528534-7fd733a832a0?w=1600&auto=format&fit=crop&q=80",
+    huntersville:
+      "https://images.unsplash.com/photo-1499856871958-5b9627545d1a?w=1600&auto=format&fit=crop&q=80",
+    concord:
+      "https://images.unsplash.com/photo-1568844293986-8d0400bd4745?w=1600&auto=format&fit=crop&q=80",
+    kannapolis:
+      "https://images.unsplash.com/photo-1531058020387-3be344556be6?w=1600&auto=format&fit=crop&q=80",
+    "indian-trail":
+      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1600&auto=format&fit=crop&q=80",
+    monroe:
+      "https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=1600&auto=format&fit=crop&q=80",
+    mooresville:
+      "https://images.unsplash.com/photo-1613977257363-707ba9348227?w=1600&auto=format&fit=crop&q=80",
+    troutman:
+      "https://images.unsplash.com/photo-1502082553048-f009c37129b9?w=1600&auto=format&fit=crop&q=80",
+    statesville:
+      "https://images.unsplash.com/photo-1449844908441-8829872d2607?w=1600&auto=format&fit=crop&q=80",
+    denver:
+      "https://images.unsplash.com/photo-1499856871958-5b9627545d1a?w=1600&auto=format&fit=crop&q=80",
+    "sherrills-ford":
+      "https://images.unsplash.com/photo-1523472721958-3b4a17a3a72f?w=1600&auto=format&fit=crop&q=80",
+    hickory:
+      "https://images.unsplash.com/photo-1519681393784-d120267933ba?w=1600&auto=format&fit=crop&q=80",
+    raleigh:
+      "https://images.unsplash.com/photo-1608096275195-01e2d3f8c1f8?w=1600&auto=format&fit=crop&q=80",
+    durham:
+      "https://images.unsplash.com/photo-1541423408874-99f27e93b12d?w=1600&auto=format&fit=crop&q=80",
+  };
+  return (
+    map[citySlug] ??
+    "https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=1600&auto=format&fit=crop&q=80"
+  );
 }

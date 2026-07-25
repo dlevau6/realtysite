@@ -2,7 +2,7 @@
 
 Next.js (App Router) lead-generation site for Eric Fisher — the
 LakeNormanRealtor1 brand — as a D.R. Horton new construction specialist
-across 19 North Carolina cities.
+across 14 North Carolina cities.
 
 Eric Fisher (NC License #362747) is the operating agent through Southern
 Homes of the Carolinas. Melissa Fisher is featured as his partner.
@@ -79,7 +79,7 @@ conversion event automatically.
 
 - **Homepage** (`/`) — buyer landing with hero + embedded 3-step form,
   no top nav (per Chapter 4 rules), city grid, testimonials, second CTA
-- **City pages** (`/new-homes/[city]`) — one per market, all 19 statically
+- **City pages** (`/new-homes/[city]`) — one per market, all 14 statically
   generated at build time. Headline localized. Captures UTM params from
   ad clicks for CRM attribution.
 - **3-step buyer funnel** (`src/components/BuyerFunnel.tsx`) — Variation A
@@ -99,7 +99,7 @@ conversion event automatically.
 - **`/privacy`** and **`/terms`** — real starter content, flagged for
   attorney review before launch
 - **Footer** — Chapter 0 DR Horton legal disclosure, brokerage info,
-  Equal Housing marker, all 19 city links, "thinking of selling?" CTA
+  Equal Housing marker, all 14 city links, "thinking of selling?" CTA
 
 ## What's next (deferred to future turns)
 

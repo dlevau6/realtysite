@@ -1,15 +1,15 @@
 /**
  * Per-city unique content, extracted from the client's July 2026 D.R.
  * Horton city guides. Every city entry keeps Google from treating our
- * 14 city pages as thin/templated — each carries 4-5 unique highlights
+ * 19 city pages as thin/templated — each carries 4-5 unique highlights
  * plus a "communities overview" block that summarizes the D.R. Horton
  * community set in that city.
  *
- * Source: 19 city guide docs Eric sent this session. Cities in his new
- * guide that don't overlap with our current 14 (Bolivia, Clayton,
- * Fayetteville, Fuquay-Varina, Kernersville, Leland, Wilmington,
- * Winston-Salem) are not present here yet — awaiting decision on
- * whether to expand the city list.
+ * Source: ALL-19-Cities-DR-Horton-Master-Guide.docx, Eric's definitive
+ * final city list (received 2026-07-25). Replaces the prior 14-city set:
+ * dropped Hickory, Kannapolis, Sherrills Ford (not on Eric's list); added
+ * Bolivia, Clayton, Fayetteville, Fuquay-Varina, Kernersville, Leland,
+ * Wilmington, Winston-Salem.
  */
 
 export interface CityHighlight {
@@ -146,19 +146,6 @@ export const CITY_CONTENT: Record<string, CityContent> = {
           "All listed on the D.R. Horton city page.",
         ],
       },
-    ],
-  },
-
-  kannapolis: {
-    metaDescription:
-      "D.R. Horton new construction homes in Kannapolis, NC — reborn downtown, life-sciences campus, and among the most attainable price points in the Charlotte metro.",
-    intro:
-      "Kannapolis has become one of the metro's most affordable landing spots for new construction — with a revitalized downtown, a growing life-sciences campus, and an easy I-85 commute to Charlotte.",
-    highlights: [
-      { title: "Reborn downtown", body: "A hundreds-of-millions-dollar downtown revitalization centered on Atrium Health Ballpark and the Cannon Ballers." },
-      { title: "NC Research Campus", body: "A life-sciences hub bringing research and health-industry jobs to town." },
-      { title: "Affordable entry point", body: "Among the most attainable price points in the Charlotte metro for new construction." },
-      { title: "Commuter friendly", body: "Direct I-85 access puts Charlotte's job centers within reach." },
     ],
   },
 
@@ -407,33 +394,6 @@ export const CITY_CONTENT: Record<string, CityContent> = {
     ],
   },
 
-  "sherrills-ford": {
-    metaDescription:
-      "D.R. Horton new construction homes in Sherrills Ford, NC — Lake Norman's northwest shore, Catawba County schools, and under 40 minutes to Charlotte Douglas.",
-    intro:
-      "Sherrills Ford is Lake Norman's hidden-gem town — a genuinely peaceful pace on the northwest shore with well-regarded Catawba County schools and new retail growth catching up.",
-    highlights: [
-      { title: "Hidden-gem lake town", body: "Northwest shore of Lake Norman with a genuinely peaceful pace." },
-      { title: "Catawba County schools", body: "Well-regarded schools serving the new-home communities." },
-      { title: "New retail growth", body: "Grocery-anchored development is bringing conveniences to the lake's quiet side." },
-      { title: "Airport in 40", body: "Under 40 minutes to Charlotte Douglas International for travelers." },
-    ],
-  },
-
-  hickory: {
-    metaDescription:
-      "D.R. Horton new construction homes in Hickory, NC — nationally-ranked affordability, foothills living between Charlotte and Asheville, from the high $200s.",
-    intro:
-      "Hickory regularly ranks among the country's most affordable metros — foothills living, an hour from both Charlotte and Asheville, with a maker heritage and a reinvented downtown.",
-    highlights: [
-      { title: "National affordability standout", body: "Regularly ranked among the most affordable metro areas in the country." },
-      { title: "Between Charlotte and Asheville", body: "Foothills living about an hour from each along I-40." },
-      { title: "Craftsmanship heritage", body: "The famous furniture and manufacturing tradition shapes a maker-friendly culture." },
-      { title: "Reinvented downtown", body: "The City Walk and Hickory Trail connect parks, breweries, and a lively town center." },
-      { title: "Lake Hickory", body: "Boating and lakefront parks minutes from every neighborhood." },
-    ],
-  },
-
   raleigh: {
     metaDescription:
       "D.R. Horton new construction homes in Raleigh, NC — Research Triangle jobs, top best-places rankings, townhomes from under $300K. 38 communities across the RDU division.",
@@ -499,6 +459,267 @@ export const CITY_CONTENT: Record<string, CityContent> = {
           "Townhome products (Bell Heather Road area) plus single-family options.",
           "3–5 bed plans serving the RTP workforce.",
           "All 9 county communities listed on the D.R. Horton city page.",
+        ],
+      },
+    ],
+  },
+
+  "fuquay-varina": {
+    metaDescription:
+      "D.R. Horton new construction homes in Fuquay-Varina, NC — the Triangle's true entry-level price point, townhomes from the low $230Ks, 25 minutes from downtown Raleigh.",
+    intro:
+      "Fuquay-Varina has roughly doubled in population since 2010 and holds the Triangle's true entry-level price point — D.R. Horton townhomes from the low $230Ks — with twin historic downtowns, breweries, and festivals 25 minutes from Raleigh. NC-540's completion has slashed commute times across southern Wake County.",
+    highlights: [
+      { title: "One of NC's fastest-growing towns", body: "Population has roughly doubled since 2010." },
+      { title: "The Triangle's true entry-level price point", body: "D.R. Horton townhomes from the low $230Ks." },
+      { title: "Charming twin historic downtowns", body: "Breweries and festivals, 25 minutes from downtown Raleigh." },
+      { title: "NC-540 loop completion", body: "Has slashed commute times across southern Wake County." },
+      { title: "Heaviest D.R. Horton concentration in the Triangle's south", body: "Woodgrove, Madden West, and the Townes at Madden West selling simultaneously." },
+    ],
+    communityGroups: [
+      {
+        name: "Woodgrove",
+        bullets: [
+          "230 planned homes just off US-401.",
+          "Pool and cabana amenities.",
+          "Mid-$300Ks to low $400Ks; effortless commutes to Raleigh, Holly Springs, and Lillington.",
+        ],
+      },
+      {
+        name: "Madden West",
+        bullets: [
+          "Popular Beckett, Haywood, and Wesley ranch and two-story plans.",
+          "1,599–1,983 sq ft, mid-$300Ks to high $400Ks.",
+          "Model-home showcase community for the area.",
+        ],
+      },
+      {
+        name: "The Townes at Madden West",
+        bullets: [
+          "Townhomes from the low $230Ks — the Triangle's entry-level benchmark.",
+          "1,418–1,614 sq ft low-maintenance plans.",
+          "First-time-buyer and investor sweet spot.",
+        ],
+      },
+    ],
+  },
+
+  clayton: {
+    metaDescription:
+      "D.R. Horton new construction homes in Clayton, NC — the Triangle's best value corridor from around $300K, 20 minutes to downtown Raleigh, powered by the $4B+ Novo Nordisk expansion.",
+    intro:
+      "Clayton anchors Johnston County's growth, powered by Novo Nordisk's $4B+ pharmaceutical expansion — with D.R. Horton pricing from around $300K, 20 minutes to downtown Raleigh, and lower property taxes than Wake County.",
+    highlights: [
+      { title: "Powered by a $4B+ pharma expansion", body: "Novo Nordisk's Johnston County investment makes this one of NC's fastest-growing counties." },
+      { title: "The Triangle's best value corridor", body: "D.R. Horton homes from around $300K." },
+      { title: "20 minutes to downtown Raleigh", body: "Small-town parks, greenways, and the Clayton Center arts venue." },
+      { title: "Lower property taxes", body: "Johnston County taxes run below Wake County's." },
+    ],
+    communityGroups: [
+      {
+        name: "Clayton 27520 community cluster",
+        bullets: [
+          "Six-plus active communities — the highest count in Johnston County.",
+          "Full price ladder: roughly $304K starters up to $483K executive homes with 3,112–3,490 sq ft.",
+          "Ranch and two-story options from 1,497 to 2,824 sq ft.",
+          "Several communities showing 'recently reduced' pricing — negotiating leverage right now.",
+        ],
+      },
+    ],
+  },
+
+  wilmington: {
+    metaDescription:
+      "D.R. Horton new construction homes in Wilmington, NC — coastal living near Wrightsville, Carolina, and Kure beaches from the high $200Ks. The largest coastal new-home operation in NC with 22 communities.",
+    intro:
+      "Wilmington puts you where people vacation — a historic riverfront downtown minutes from Wrightsville, Carolina, and Kure beaches, powered by port expansion, a growing film industry, and Novant/NHRMC healthcare. D.R. Horton pricing starts in the high $200Ks, well below inland big-city equivalents, across 22 communities — the largest coastal new-home operation in North Carolina.",
+    highlights: [
+      { title: "Live where people vacation", body: "Historic riverfront downtown with Wrightsville, Carolina, and Kure beaches all within 20 minutes." },
+      { title: "Booming coastal economy", body: "Port expansion, a growing film industry ('Hollywood East'), and Novant/NHRMC healthcare anchor the job base." },
+      { title: "Coastal pricing from the high $200Ks", body: "New construction well below what inland big cities charge for a fraction of the lifestyle." },
+      { title: "College-town energy", body: "UNCW brings arts, continuing education, and a younger population mix to the metro." },
+      { title: "Largest coastal new-home operation in NC", body: "22 D.R. Horton communities across the metro — more coastal inventory than anywhere else in the state." },
+    ],
+    communityGroups: [
+      {
+        name: "Sidbury Station",
+        bullets: [
+          "North Wilmington master-planned community — newest phase now selling.",
+          "From the low $330Ks starting at 1,618 sq ft.",
+          "Community amenities coming; strong appreciation corridor.",
+        ],
+      },
+      {
+        name: "The Grove at Blake Farm",
+        bullets: [
+          "High $200Ks to mid $400Ks — one of the widest price spans in the Wilmington division.",
+          "Fast-growing corridor between Wilmington and Hampstead.",
+          "Open-concept plans with smart-home tech standard.",
+        ],
+      },
+      {
+        name: "Cape Fear riverfront townhome community",
+        bullets: [
+          "Townhomes at the Pleasure Island gateway — coastal water access at townhome pricing.",
+          "Prime Wilmington–Carolina Beach positioning.",
+          "All active communities listed on the D.R. Horton city page.",
+        ],
+      },
+    ],
+  },
+
+  leland: {
+    metaDescription:
+      "D.R. Horton new construction homes in Leland, NC — 15 minutes to downtown Wilmington, Brunswick County's lower taxes, and NC's fastest-growing county.",
+    intro:
+      "Leland is the fastest-growing town in the Wilmington region — 15 minutes to downtown Wilmington across the river, with Brunswick County taxes running well below New Hanover's for the same coastal lifestyle.",
+    highlights: [
+      { title: "Fastest-growing town in the Wilmington region", body: "15 minutes to downtown Wilmington across the river." },
+      { title: "NC's fastest-growing county", body: "Brunswick County repeatedly ranks as the fastest-growing county in the state." },
+      { title: "Dramatically lower taxes", body: "Brunswick County taxes run well below New Hanover's — same lifestyle, lower carrying cost." },
+      { title: "Beaches, golf, and marinas", body: "30–40 minutes to a half-dozen different beaches, plus golf, marinas, and the Intracoastal." },
+    ],
+    communityGroups: [
+      {
+        name: "Grayson Park",
+        bullets: [
+          "Established amenity community with pool and sidewalks.",
+          "Mid-$300Ks to low $400Ks.",
+          "15 minutes to downtown Wilmington.",
+        ],
+      },
+      {
+        name: "Vineyard Grove",
+        bullets: [
+          "Off Leland School Road.",
+          "About 15 minutes to downtown Wilmington; roughly 30 to Wrightsville Beach or Oak Island.",
+          "One of Leland's newest neighborhoods — early-phase opportunity.",
+        ],
+      },
+    ],
+  },
+
+  bolivia: {
+    metaDescription:
+      "D.R. Horton new construction homes in Bolivia, NC — coastal Brunswick County pricing from the mid $200Ks, 20-30 minutes to Oak Island, Holden Beach, and Southport.",
+    intro:
+      "Bolivia is the value epicenter of NC's coastal boom — oceanside-county living at inland prices, roughly 20-30 minutes to Oak Island, Holden Beach, and Southport, anchoring the 17-community Bolivia/Brunswick search radius at the heart of D.R. Horton's coastal buildout.",
+    highlights: [
+      { title: "The value epicenter of NC's coastal boom", body: "Oceanside-county living at inland prices." },
+      { title: "Central Brunswick location", body: "Roughly 20-30 minutes to Oak Island, Holden Beach, and Southport." },
+      { title: "Low taxes, mild winters", body: "Strong appreciation potential as the county keeps growing." },
+      { title: "Heart of the coastal buildout", body: "The 17-community Bolivia/Brunswick search radius is D.R. Horton's coastal stronghold." },
+    ],
+    communityGroups: [
+      {
+        name: "Bella Point",
+        bullets: [
+          "Single-family from the high $200Ks to mid $300Ks.",
+          "Central Brunswick County convenience.",
+          "Smart-home package standard.",
+        ],
+      },
+      {
+        name: "Eagle Creek",
+        bullets: [
+          "From the mid-$200Ks — arguably the lowest-priced new single-family construction in any NC coastal county.",
+          "Quiet setting with new county services expanding nearby.",
+          "Beach access in three directions.",
+        ],
+      },
+    ],
+  },
+
+  "winston-salem": {
+    metaDescription:
+      "D.R. Horton new construction homes in Winston-Salem, NC — 'City of Arts and Innovation' pricing from the low $240Ks, Wake Forest University and Old Salem history. Up to 22 communities in the Triad's D.R. Horton hub.",
+    intro:
+      "Winston-Salem is the Triad's D.R. Horton hub — Wake Forest University, Atrium Health Wake Forest Baptist, and the Innovation Quarter biotech district anchor an economy with new construction pricing from the low $240Ks, among the lowest of any sizable U.S. metro.",
+    highlights: [
+      { title: "City of Arts and Innovation", body: "Wake Forest University, Atrium Health Wake Forest Baptist, and the Innovation Quarter biotech district." },
+      { title: "Among the lowest new-construction prices nationally", body: "Pricing from the low $240Ks in a metro of this size is rare." },
+      { title: "Rich culture", body: "Old Salem historic district, a top-rated food scene, and downtown minor-league baseball." },
+      { title: "Well below the national cost of living", body: "A meaningfully lower cost of living than most comparable metros." },
+      { title: "The Triad's D.R. Horton hub", body: "Up to 22 communities in the Winston-Salem search radius." },
+    ],
+    communityGroups: [
+      {
+        name: "Fiddlers Landing",
+        drHortonUrl: "https://www.drhorton.com/north-carolina/greensboro-winston-salem/winston-salem/fiddlers-landing",
+        bullets: [
+          "5.2 miles from downtown Winston-Salem; 3.5 from Salem Lake Trail and UNC School of the Arts.",
+          "Single-family from the low $300Ks, 1,902–3,108 sq ft.",
+          "Near Reynolds Park, golf courses, and I-40 for the Triad commute.",
+        ],
+      },
+      {
+        name: "Fishel Village",
+        bullets: [
+          "125 homes from roughly $272K–$330K — remarkable pricing for a metro of this size.",
+          "South Winston-Salem (27107) convenience.",
+        ],
+      },
+      {
+        name: "Winston-Salem townhome communities",
+        bullets: [
+          "Townhomes from the low $240Ks (1,416–1,429 sq ft) — ideal first-time-buyer product.",
+          "All communities listed on the D.R. Horton city page.",
+        ],
+      },
+    ],
+  },
+
+  kernersville: {
+    metaDescription:
+      "D.R. Horton new construction homes in Kernersville, NC — the Triad's perfect midpoint from the mid $200Ks, near the Toyota battery megasite and PTI airport aerospace hub.",
+    intro:
+      "Kernersville sits at the Triad's perfect midpoint — about 20 minutes to Winston-Salem, Greensboro, and High Point job centers — with new D.R. Horton pricing from the mid $200Ks and thousands of incoming jobs from the Toyota battery megasite and PTI airport aerospace hub.",
+    highlights: [
+      { title: "The Triad's perfect midpoint", body: "About 20 minutes to Winston-Salem, Greensboro, AND High Point job centers." },
+      { title: "Extraordinary affordability", body: "New D.R. Horton homes from the mid-$200Ks." },
+      { title: "Major incoming job catalyst", body: "Near the Toyota battery megasite corridor and PTI airport aerospace hub (Boom Supersonic, HondaJet, FedEx)." },
+      { title: "Small-town charm, big-metro convenience", body: "A walkable downtown with big-metro job access." },
+    ],
+    communityGroups: [
+      {
+        name: "Glennview",
+        bullets: [
+          "From the mid-$200Ks.",
+          "3–5 bedroom plans from 1,497 to 2,644 sq ft.",
+          "Commuter-perfect location off the I-40 corridor.",
+        ],
+      },
+      {
+        name: "The Grove at Glennview",
+        bullets: [
+          "Sister community from the high $200Ks.",
+          "Same proven floorplan library.",
+          "Early phases in an appreciating corridor.",
+        ],
+      },
+    ],
+  },
+
+  fayetteville: {
+    metaDescription:
+      "D.R. Horton new construction homes in Fayetteville, NC — VA-loan-friendly pricing near Fort Liberty, the state's most affordable D.R. Horton markets, 1 hour to Raleigh.",
+    intro:
+      "Fayetteville is anchored by Fort Liberty (Fort Bragg), one of the world's largest military installations, giving the market a recession-resistant economy and some of the most affordable D.R. Horton pricing in North Carolina — with VA-loan-friendly buying and dedicated military benefits.",
+    highlights: [
+      { title: "Fort Liberty anchor", body: "One of the world's largest military installations provides a rock-solid, recession-resistant economy." },
+      { title: "Among the most affordable D.R. Horton markets in NC", body: "VA-loan-friendly buying and dedicated military benefits." },
+      { title: "I-95 location", body: "1 hour to Raleigh, 2 hours to the beach, easy East Coast travel." },
+      { title: "Revitalized downtown", body: "Minor-league baseball (Woodpeckers) at Segra Stadium." },
+      { title: "Strong rental-demand backup", body: "For owners who are ever reassigned." },
+    ],
+    communityGroups: [
+      {
+        name: "Fayetteville metro communities (28306 and 28311 / Pine Forest corridors)",
+        bullets: [
+          "Five-plus active communities in the metro's most desirable growth corridors.",
+          "Popular plans include the Aiken, Camden, Madison, McKimmon, and Greenville.",
+          "Pricing targets the VA-loan sweet spot; no-down-payment promotions appear frequently.",
+          "D.R. Horton military benefits program applies.",
         ],
       },
     ],
