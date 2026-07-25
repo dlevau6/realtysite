@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import BuyerFunnel from "@/components/BuyerFunnel";
 import StickyCallButton from "@/components/StickyCallButton";
+import { FaqPageSchema } from "@/components/Schema";
 import { TRUST_LINE, getCityBySlug } from "@/lib/site-config";
 
 export const metadata: Metadata = {
@@ -98,6 +99,7 @@ export default async function CommunityDiscoveryPage({
 
   return (
     <>
+      <FaqPageSchema items={FAQS} />
       <StickyCallButton />
 
       {/* Urgency bar */}

@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { fetchFeaturedListings } from "@/lib/spark-api";
+import SearchWidget from "@/components/SearchWidget";
 
 const money = (n: number) =>
   new Intl.NumberFormat("en-US", {
@@ -35,7 +36,7 @@ export default async function FeaturedListings() {
   const isDemo = !process.env.SPARK_OFFICE_ID;
 
   return (
-    <section className="bg-white py-20">
+    <section id="featured-listings" className="bg-white py-20">
       <div className="mx-auto max-w-6xl px-6">
         <div className="mb-8 flex items-end justify-between gap-4 flex-wrap">
           <div>
@@ -49,6 +50,11 @@ export default async function FeaturedListings() {
           <p className="text-sm text-[var(--color-ink)]/60">
             {isDemo ? "Sample data" : "Updated every 10 minutes"}
           </p>
+        </div>
+
+        {/* Compliance-compliant search widget — never uses the word "MLS". */}
+        <div className="mb-10">
+          <SearchWidget />
         </div>
 
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">

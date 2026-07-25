@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import BuyerFunnel from "@/components/BuyerFunnel";
 import CommunityTileButton from "@/components/CommunityTileButton";
+import { CityPlaceSchema } from "@/components/Schema";
 import {
   ALL_CITIES,
   SITE,
@@ -67,6 +68,7 @@ export default async function CityPage({
 
   return (
     <>
+      <CityPlaceSchema citySlug={city.slug} cityName={city.name} />
       <section className="relative overflow-hidden bg-[var(--color-navy)] text-white">
         <div className="mx-auto grid max-w-6xl gap-10 px-6 py-14 md:grid-cols-[1.2fr_1fr] md:items-start md:py-20">
           <div>

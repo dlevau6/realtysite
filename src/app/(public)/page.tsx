@@ -267,10 +267,14 @@ export default function HomePage() {
               />
             </div>
             <div>
+              {/* CANOPY EQUAL PROMINENCE — agent and brokerage identically styled. */}
               <p className="font-[family-name:var(--font-data)] text-xs uppercase tracking-widest text-[var(--color-drh-red)]">
+                {SITE.agentName} · {SITE.brokerage}
+              </p>
+              <p className="mt-1 font-[family-name:var(--font-data)] text-[10px] uppercase tracking-widest text-[var(--color-ink)]/50">
                 {SITE.agentTitle} · Lic. {SITE.licenseNumber}
               </p>
-              <h2 className="mt-2 font-[family-name:var(--font-display)] text-3xl font-bold text-[var(--color-navy)] md:text-4xl">
+              <h2 className="mt-3 font-[family-name:var(--font-display)] text-3xl font-bold text-[var(--color-navy)] md:text-4xl">
                 Getting to know {SITE.agentName.split(" ")[0]} and{" "}
                 {SITE.partnerName.split(" ")[0]}
               </h2>
@@ -278,10 +282,11 @@ export default function HomePage() {
                 {/* TODO: replace with real bio from Eric — this is
                     placeholder drafted from the tone of his existing
                     branding materials and testimonials. */}
-                Eric Fisher has spent two decades on the ground in the Charlotte,
-                Lake Norman, and Triangle new construction markets, working with
-                first-time buyers, relocations, and downsizers. Alongside his
-                wife {SITE.partnerName.split(" ")[0]}, {SITE.agentName.split(" ")[0]}{" "}
+                {SITE.agentName} has spent two decades on the ground in the
+                Charlotte, Lake Norman, and Triangle new construction markets
+                with {SITE.brokerage}, working with first-time buyers,
+                relocations, and downsizers. Alongside his wife{" "}
+                {SITE.partnerName.split(" ")[0]}, {SITE.agentName.split(" ")[0]}{" "}
                 built {SITE.brandName} to be a specialist practice — deep on
                 D.R. Horton, deliberately narrow, honest with clients about
                 what fits and what doesn&rsquo;t.
