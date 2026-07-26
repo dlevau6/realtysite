@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Montserrat, Open_Sans, IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
 import Footer from "@/components/Footer";
+import MetaPixel from "@/components/MetaPixel";
+import { RealEstateAgentSchema } from "@/components/Schema";
 import { SITE } from "@/lib/site-config";
 
 const montserrat = Montserrat({
@@ -52,19 +54,24 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
     <html lang="en">
+      <head>
+        <RealEstateAgentSchema />
+        <MetaPixel />
+      </head>
       <body
         className={`${montserrat.variable} ${openSans.variable} ${plexMono.variable} antialiased`}
       >
-        {/* Landing pages intentionally have no top nav — the funnel only
-            allows one exit (the form). Interior pages can add their own
-            header component if needed later. */}
+        {/* Public routes get a compliance-required header via
+            src/app/(public)/layout.tsx — Canopy MLS Rule #5 (equal
+            prominence for agent + brokerage). Admin routes have their
+            own AdminNav. */}
         <main>{children}</main>
         <Footer />
       </body>

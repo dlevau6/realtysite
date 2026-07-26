@@ -38,6 +38,7 @@ const SECTIONS: {
       "google_ads_buyer_label",
       "google_ads_seller_label",
       "ga4_measurement_id",
+      "meta_pixel_id",
     ],
   },
 ];

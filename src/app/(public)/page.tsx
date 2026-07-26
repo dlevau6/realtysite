@@ -6,6 +6,7 @@ import RotatingHero from "@/components/RotatingHero";
 import StickyCallButton from "@/components/StickyCallButton";
 import CityPhotoButton from "@/components/CityPhotoButton";
 import CommunityTileButton from "@/components/CommunityTileButton";
+import FeaturedListings from "@/components/FeaturedListings";
 import { SITE, TRUST_LINE } from "@/lib/site-config";
 import { getFeaturedCommunities } from "@/lib/communities";
 
@@ -14,8 +15,13 @@ export const metadata: Metadata = {
   description: SITE.description,
 };
 
-export default function HomePage() {
-  const featured = getFeaturedCommunities().slice(0, 6);
+// Featured communities are editable from /admin/content now — regenerate
+// in the background every 5 minutes so an admin change shows up without
+// a redeploy, same as the city pages.
+export const revalidate = 300;
+
+export default async function HomePage() {
+  const featured = (await getFeaturedCommunities()).slice(0, 6);
 
   return (
     <>
@@ -33,7 +39,7 @@ export default function HomePage() {
               {SITE.headline}
             </h1>
             <p className="mt-6 max-w-xl text-lg text-white/85">
-              14 North Carolina cities. 30+ D.R. Horton communities. Real prices,
+              19 North Carolina cities. 50+ D.R. Horton communities. Real prices,
               current availability, and standing builder incentives — delivered
               by text in 60 seconds.
             </p>
@@ -106,36 +112,95 @@ export default function HomePage() {
                 href: "/community-discovery",
                 eyebrow: "Researching",
                 title: "Explore new construction communities",
-                body: "Browse D.R. Horton communities, floor plans, and pricing across 14 NC markets.",
+                body: "Browse D.R. Horton communities, floor plans, and pricing across 19 NC markets.",
+                main: "#1F7A8C", // --color-teal
+                soft: "var(--color-teal-soft)",
+                hoverBorder: "hover:border-[#1F7A8C]",
+                icon: (
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M10.5 18a7.5 7.5 0 1 0 0-15 7.5 7.5 0 0 0 0 15Zm10.5 3-5.4-5.4"
+                  />
+                ),
               },
               {
                 href: "/incentives",
                 eyebrow: "Ready to buy",
                 title: "See current builder incentives",
                 body: "Closing cost programs, DHI Mortgage financing, and $0-down options.",
+                main: "#E31837", // --color-drh-red
+                soft: "rgba(227,24,55,0.1)",
+                hoverBorder: "hover:border-[#E31837]",
+                icon: (
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M20.6 12.3 12.7 20.2a1.5 1.5 0 0 1-2.12 0l-6.8-6.8a1.5 1.5 0 0 1-.44-1.06V5.3A2 2 0 0 1 5.3 3.3h7.04c.4 0 .78.16 1.06.44l7.2 7.2a1.5 1.5 0 0 1 0 2.12ZM8.3 8.3h.01"
+                  />
+                ),
               },
               {
                 href: "/rent-vs-own",
                 eyebrow: "Currently renting",
                 title: "Stop renting — compare rent vs. own",
                 body: "Interactive calculator and Free Buying Power Report for first-time buyers.",
+                main: "#A9832F", // --color-gold
+                soft: "var(--color-gold-soft)",
+                hoverBorder: "hover:border-[#A9832F]",
+                icon: (
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M4 21V9.5l8-6 8 6V21M9 21v-7h6v7M4 21h16"
+                  />
+                ),
               },
             ].map((tile) => (
               <a
                 key={tile.href}
                 href={tile.href}
-                className="group flex flex-col rounded-2xl border-2 border-[var(--color-line)] bg-white p-6 transition-all hover:-translate-y-0.5 hover:border-[var(--color-drh-red)] hover:shadow-md"
+                className={`group relative flex flex-col overflow-hidden rounded-2xl border-2 border-[var(--color-line)] bg-white p-6 transition-all hover:-translate-y-0.5 hover:shadow-md ${tile.hoverBorder}`}
               >
-                <p className="font-[family-name:var(--font-data)] text-xs uppercase tracking-widest text-[var(--color-teal)]">
+                {/* Soft tinted corner glow — the "art" the flat cards were missing */}
+                <div
+                  aria-hidden
+                  className="pointer-events-none absolute -right-8 -top-8 h-28 w-28 rounded-full transition-transform duration-300 group-hover:scale-125"
+                  style={{ backgroundColor: tile.soft }}
+                />
+
+                <div
+                  aria-hidden
+                  className="relative flex h-11 w-11 items-center justify-center rounded-full"
+                  style={{ backgroundColor: tile.soft }}
+                >
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke={tile.main}
+                    strokeWidth="1.75"
+                    className="h-5 w-5"
+                  >
+                    {tile.icon}
+                  </svg>
+                </div>
+
+                <p
+                  className="relative mt-4 font-[family-name:var(--font-data)] text-xs font-semibold uppercase tracking-widest"
+                  style={{ color: tile.main }}
+                >
                   {tile.eyebrow}
                 </p>
-                <h3 className="mt-2 font-[family-name:var(--font-display)] text-xl font-bold text-[var(--color-navy)]">
+                <h3 className="relative mt-2 font-[family-name:var(--font-display)] text-xl font-bold text-[var(--color-navy)]">
                   {tile.title}
                 </h3>
-                <p className="mt-2 flex-1 text-sm text-[var(--color-ink)]/80">
+                <p className="relative mt-2 flex-1 text-sm text-[var(--color-ink)]/80">
                   {tile.body}
                 </p>
-                <p className="mt-4 font-[family-name:var(--font-display)] text-sm font-bold text-[var(--color-drh-red)] transition-transform group-hover:translate-x-1">
+                <p
+                  className="relative mt-4 font-[family-name:var(--font-display)] text-sm font-bold transition-transform group-hover:translate-x-1"
+                  style={{ color: tile.main }}
+                >
                   Learn more →
                 </p>
               </a>
@@ -144,11 +209,11 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Section 3: 14 city buttons grouped by metro cluster */}
+      {/* Section 3: 19 city buttons grouped by metro cluster */}
       <section id="find-your-city" className="bg-white py-20">
         <div className="mx-auto max-w-6xl px-6">
           <p className="font-[family-name:var(--font-data)] text-xs uppercase tracking-widest text-[var(--color-drh-red)]">
-            14 North Carolina markets
+            19 North Carolina markets
           </p>
           <h2 className="mt-2 font-[family-name:var(--font-display)] text-3xl font-bold text-[var(--color-navy)] md:text-4xl">
             Find D.R. Horton new construction homes by city
@@ -189,6 +254,11 @@ export default function HomePage() {
           </div>
         </section>
       ) : null}
+
+      {/* Section 4.5: Live IDX listings pulled from Spark. Renders
+          nothing gracefully if the API returns empty or the token is
+          missing — safe to leave on even in states before MLS approval. */}
+      <FeaturedListings />
 
       {/* Section 5: Why buy new with a buyer's agent (trust builder) */}
       <section className="bg-white py-20">
@@ -261,10 +331,14 @@ export default function HomePage() {
               />
             </div>
             <div>
+              {/* CANOPY EQUAL PROMINENCE — agent and brokerage identically styled. */}
               <p className="font-[family-name:var(--font-data)] text-xs uppercase tracking-widest text-[var(--color-drh-red)]">
+                {SITE.agentName} · {SITE.brokerage}
+              </p>
+              <p className="mt-1 font-[family-name:var(--font-data)] text-[10px] uppercase tracking-widest text-[var(--color-ink)]/50">
                 {SITE.agentTitle} · Lic. {SITE.licenseNumber}
               </p>
-              <h2 className="mt-2 font-[family-name:var(--font-display)] text-3xl font-bold text-[var(--color-navy)] md:text-4xl">
+              <h2 className="mt-3 font-[family-name:var(--font-display)] text-3xl font-bold text-[var(--color-navy)] md:text-4xl">
                 Getting to know {SITE.agentName.split(" ")[0]} and{" "}
                 {SITE.partnerName.split(" ")[0]}
               </h2>
@@ -272,10 +346,12 @@ export default function HomePage() {
                 {/* TODO: replace with real bio from Eric — this is
                     placeholder drafted from the tone of his existing
                     branding materials and testimonials. */}
-                Eric Fisher has spent two decades on the ground in the Charlotte,
-                Lake Norman, and Triangle new construction markets, working with
-                first-time buyers, relocations, and downsizers. Alongside his
-                wife {SITE.partnerName.split(" ")[0]}, {SITE.agentName.split(" ")[0]}{" "}
+                {SITE.agentName} has spent two decades on the ground across
+                Charlotte, Lake Norman, the Triangle, the Triad, and the NC
+                coast new construction markets with {SITE.brokerage}, working
+                with first-time buyers,
+                relocations, and downsizers. Alongside his wife{" "}
+                {SITE.partnerName.split(" ")[0]}, {SITE.agentName.split(" ")[0]}{" "}
                 built {SITE.brandName} to be a specialist practice — deep on
                 D.R. Horton, deliberately narrow, honest with clients about
                 what fits and what doesn&rsquo;t.
