@@ -8,6 +8,12 @@
  * construction specialist."
  */
 
+import {
+  CITY_PHOTOS,
+  COMMUNITY_PHOTO_POOL,
+  type PhotoCredit,
+} from "./photo-credits";
+
 export const SITE = {
   brandName: "LakeNormanRealtor1",
   positioning: "Your D.R. Horton new construction specialist",
@@ -187,28 +193,87 @@ export function cityLandmark(citySlug: string): string {
 }
 
 /**
- * Background photo URL for each city button. Uses a small pool of known-
- * working Unsplash IDs (the same ones RotatingHero uses in the hero) —
- * previous mapping had made-up IDs that 404'd on Unsplash's CDN.
+ * Shared pool of known-working, license-verified stock photos (Unsplash —
+ * free for commercial use, no attribution required: unsplash.com/license).
+ * Every ID in this pool has been confirmed to resolve on Unsplash's CDN.
  *
- * TODO before real launch: swap for Eric's licensed photography or NC-
- * specific stock, per Section 5 of the spec. Photos are intentionally
- * generic homes/landscapes right now, not city landmarks.
+ * IMPORTANT: do not add IDs to this pool without confirming them in a
+ * browser first. A previous version had made-up IDs that 404'd — see
+ * "Recent bugs resolved" in the handoff doc. This session (2026-07-26)
+ * we tried to source additional real per-city landmark photos but this
+ * sandbox has no direct internet access for verifying new Unsplash/Pexels
+ * IDs (bash networking is blocked; the fetch tool can't distinguish a
+ * valid photo response from a 404 for binary content). Rather than risk
+ * reintroducing the 404 bug, both city and community tiles below reuse
+ * this same verified pool until real photos are sourced.
+ *
+ * TODO before real launch: swap for Eric's licensed photography, an NC-
+ * specific stock package, or city CVB media kit photos (see Section 5 /
+ * city guide notes). Two ways to get real per-city + per-community photos
+ * safely: (1) get a free Unsplash or Pexels API developer key so photo
+ * IDs come back guaranteed-valid, or (2) browse Unsplash/Pexels in a
+ * browser, hand-pick images, and self-host them in /public/images so
+ * there's no hotlink/ID risk at all. Ask Daimon which he wants before
+ * spending more time on this.
+ */
+const STOCK_PHOTO_POOL = [
+  "https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=1600&auto=format&fit=crop&q=80",
+  "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1600&auto=format&fit=crop&q=80",
+  "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=1600&auto=format&fit=crop&q=80",
+  "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=1600&auto=format&fit=crop&q=80",
+  "https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=1600&auto=format&fit=crop&q=80",
+  "https://images.unsplash.com/photo-1519659528534-7fd733a832a0?w=1600&auto=format&fit=crop&q=80",
+  "https://images.unsplash.com/photo-1499856871958-5b9627545d1a?w=1600&auto=format&fit=crop&q=80",
+];
+
+/** Deterministic string hash so a given slug always maps to the same photo. */
+function hashSlug(slug: string, seed = 0): number {
+  let hash = seed;
+  for (let i = 0; i < slug.length; i++) {
+    hash = (hash * 31 + slug.charCodeAt(i)) >>> 0;
+  }
+  return hash;
+}
+
+/**
+ * Background photo URL for each city button. See STOCK_PHOTO_POOL note
+ * above — generic verified stock, not city landmarks, until real photos
+ * are sourced.
  */
 export function cityPhoto(citySlug: string): string {
-  const pool = [
-    "https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=1600&auto=format&fit=crop&q=80",
-    "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1600&auto=format&fit=crop&q=80",
-    "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=1600&auto=format&fit=crop&q=80",
-    "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=1600&auto=format&fit=crop&q=80",
-    "https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=1600&auto=format&fit=crop&q=80",
-    "https://images.unsplash.com/photo-1519659528534-7fd733a832a0?w=1600&auto=format&fit=crop&q=80",
-    "https://images.unsplash.com/photo-1499856871958-5b9627545d1a?w=1600&auto=format&fit=crop&q=80",
-  ];
-  // Deterministic hash of the slug so a given city always maps to the same photo.
-  let hash = 0;
-  for (let i = 0; i < citySlug.length; i++) {
-    hash = (hash * 31 + citySlug.charCodeAt(i)) >>> 0;
+  const curated = CITY_PHOTOS[citySlug];
+  if (curated) return curated.url;
+  return STOCK_PHOTO_POOL[hashSlug(citySlug) % STOCK_PHOTO_POOL.length];
+}
+
+/**
+ * Attribution for a city's photo, when it came from the curated
+ * Unsplash-API-sourced set (CITY_PHOTOS in photo-credits.ts). Returns
+ * null for cities still on the generic hash-pool fallback — those
+ * weren't sourced via the API, so no attribution obligation applies.
+ */
+export function cityPhotoCredit(citySlug: string): PhotoCredit | null {
+  return CITY_PHOTOS[citySlug] ?? null;
+}
+
+/**
+ * Background photo URL for each community tile. Explicitly NOT a D.R.
+ * Horton community photo — those are the builder's copyrighted assets
+ * and are off-limits until Eric gets photo-use permission (Section 5).
+ * Uses the curated Unsplash-API-sourced pool when available, seeded
+ * differently from cityPhoto() so a community tile doesn't visually
+ * repeat its own city page's hero image.
+ */
+export function communityPhoto(communitySlug: string): string {
+  if (COMMUNITY_PHOTO_POOL.length > 0) {
+    return COMMUNITY_PHOTO_POOL[hashSlug(communitySlug, 7) % COMMUNITY_PHOTO_POOL.length].url;
   }
-  return pool[hash % pool.length];
+  return STOCK_PHOTO_POOL[hashSlug(communitySlug, 7) % STOCK_PHOTO_POOL.length];
+}
+
+/** Attribution for a community tile's photo — null if it fell back to
+ *  the non-curated generic pool (no attribution obligation there). */
+export function communityPhotoCredit(communitySlug: string): PhotoCredit | null {
+  if (COMMUNITY_PHOTO_POOL.length === 0) return null;
+  return COMMUNITY_PHOTO_POOL[hashSlug(communitySlug, 7) % COMMUNITY_PHOTO_POOL.length];
 }

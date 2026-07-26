@@ -1,6 +1,11 @@
 import Image from "next/image";
 import Link from "next/link";
-import { cityLandmark, cityPhoto, type CityRef } from "@/lib/site-config";
+import {
+  cityLandmark,
+  cityPhoto,
+  cityPhotoCredit,
+  type CityRef,
+} from "@/lib/site-config";
 
 interface Props {
   city: CityRef;
@@ -14,51 +19,83 @@ interface Props {
  * made adjacent tiles drift at different rates and broke the grid feel).
  *
  * The image itself scales; a dark bottom gradient keeps the label crisp.
+ *
+ * Photo credit: a small "Photo: Name" line renders under the tile when
+ * cityPhotoCredit() has attribution data — required by Unsplash's API
+ * Guidelines for photos sourced through the API (not just casual
+ * hotlinking). It's a sibling <a>, not nested inside the tile's own
+ * Link, since HTML doesn't allow anchors inside anchors.
  */
 export default function CityPhotoButton({ city, metroName }: Props) {
   const landmark = cityLandmark(city.slug);
+  const credit = cityPhotoCredit(city.slug);
 
   return (
-    <Link
-      href={`/dr-horton/${city.slug}`}
-      className="group relative block aspect-square overflow-hidden rounded-xl shadow-sm transition-shadow hover:shadow-xl focus-visible:outline-2 focus-visible:outline-[var(--color-drh-red)]"
-    >
-      {/* Photo — subtle 3s scale-in on hover, one uniform direction */}
-      <div className="absolute inset-0 transition-transform duration-[3000ms] ease-out group-hover:scale-110">
-        <Image
-          src={cityPhoto(city.slug)}
-          alt={`${city.name}, NC — ${landmark || "new construction"}`}
-          fill
-          sizes="(min-width: 1024px) 25vw, (min-width: 640px) 33vw, 50vw"
-          className="object-cover"
-        />
-      </div>
-
-      {/* Full-height dark navy gradient — heavier at bottom for label readability */}
-      <div className="absolute inset-0 bg-gradient-to-t from-[var(--color-navy-deep)]/95 via-[var(--color-navy)]/30 to-transparent" />
-
-      {/* Red accent bar that thickens on hover (CTA cue) */}
-      <div className="absolute inset-x-0 bottom-0 h-1 bg-[var(--color-drh-red)] transition-all duration-300 group-hover:h-1.5" />
-
-      {/* Label */}
-      <div className="absolute inset-x-0 bottom-0 p-4">
-        {metroName ? (
-          <p className="font-[family-name:var(--font-data)] text-[10px] uppercase tracking-widest text-[var(--color-carolina)]">
-            {metroName}
-          </p>
-        ) : null}
-        <div className="mt-0.5 flex items-center justify-between gap-2">
-          <h3 className="font-[family-name:var(--font-display)] text-lg font-bold text-white leading-tight">
-            {city.name}
-          </h3>
-          <span
-            aria-hidden
-            className="text-xl text-white/90 transition-transform duration-300 group-hover:translate-x-1"
-          >
-            →
-          </span>
+    <div>
+      <Link
+        href={`/dr-horton/${city.slug}`}
+        className="group relative block aspect-square overflow-hidden rounded-xl shadow-sm transition-shadow hover:shadow-xl focus-visible:outline-2 focus-visible:outline-[var(--color-drh-red)]"
+      >
+        {/* Photo — subtle 3s scale-in on hover, one uniform direction */}
+        <div className="absolute inset-0 transition-transform duration-[3000ms] ease-out group-hover:scale-110">
+          <Image
+            src={cityPhoto(city.slug)}
+            alt={`${city.name}, NC — ${landmark || "new construction"}`}
+            fill
+            sizes="(min-width: 1024px) 25vw, (min-width: 640px) 33vw, 50vw"
+            className="object-cover"
+          />
         </div>
-      </div>
-    </Link>
+
+        {/* Full-height dark navy gradient — heavier at bottom for label readability */}
+        <div className="absolute inset-0 bg-gradient-to-t from-[var(--color-navy-deep)]/95 via-[var(--color-navy)]/30 to-transparent" />
+
+        {/* Red accent bar that thickens on hover (CTA cue) */}
+        <div className="absolute inset-x-0 bottom-0 h-1 bg-[var(--color-drh-red)] transition-all duration-300 group-hover:h-1.5" />
+
+        {/* Label */}
+        <div className="absolute inset-x-0 bottom-0 p-4">
+          {metroName ? (
+            <p className="font-[family-name:var(--font-data)] text-[10px] uppercase tracking-widest text-[var(--color-carolina)]">
+              {metroName}
+            </p>
+          ) : null}
+          <div className="mt-0.5 flex items-center justify-between gap-2">
+            <h3 className="font-[family-name:var(--font-display)] text-lg font-bold text-white leading-tight">
+              {city.name}
+            </h3>
+            <span
+              aria-hidden
+              className="text-xl text-white/90 transition-transform duration-300 group-hover:translate-x-1"
+            >
+              →
+            </span>
+          </div>
+        </div>
+      </Link>
+
+      {credit ? (
+        <p className="mt-1 truncate text-[10px] text-[var(--color-ink)]/40">
+          Photo:{" "}
+          <a
+            href={credit.photographerLink}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hover:underline"
+          >
+            {credit.photographerName}
+          </a>{" "}
+          /{" "}
+          <a
+            href="https://unsplash.com/?utm_source=lakenormanrealtor1&utm_medium=referral"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hover:underline"
+          >
+            Unsplash
+          </a>
+        </p>
+      ) : null}
+    </div>
   );
 }
