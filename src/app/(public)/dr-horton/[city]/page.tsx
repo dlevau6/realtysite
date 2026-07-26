@@ -3,7 +3,6 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import BuyerFunnel from "@/components/BuyerFunnel";
 import CommunityTileButton from "@/components/CommunityTileButton";
-import { CityPlaceSchema } from "@/components/Schema";
 import {
   ALL_CITIES,
   SITE,
@@ -19,13 +18,6 @@ export function generateStaticParams() {
   return ALL_CITIES.map((city) => ({ city: city.slug }));
 }
 
-// City content + communities can now be edited from /admin/content
-// without a redeploy (see lib/city-content.ts, lib/communities.ts).
-// Keep these pages statically generated for speed/SEO but regenerate in
-// the background every 5 minutes so an admin edit shows up promptly
-// instead of only at the next deploy.
-export const revalidate = 300;
-
 export async function generateMetadata({
   params,
 }: {
@@ -34,7 +26,7 @@ export async function generateMetadata({
   const { city: slug } = await params;
   const city = getCityBySlug(slug);
   if (!city) return {};
-  const content = await getCityContent(slug);
+  const content = getCityContent(slug);
   return {
     title: `D.R. Horton new construction homes in ${city.name}, NC`,
     description:
@@ -55,8 +47,8 @@ export default async function CityPage({
   if (!city) notFound();
 
   const metro = getMetroForCity(city.slug);
-  const communities = await getCommunitiesForCity(city.slug);
-  const content = await getCityContent(city.slug);
+  const communities = getCommunitiesForCity(city.slug);
+  const content = getCityContent(city.slug);
 
   const sp = await searchParams;
   const asString = (v: string | string[] | undefined): string | undefined =>
@@ -75,7 +67,6 @@ export default async function CityPage({
 
   return (
     <>
-      <CityPlaceSchema citySlug={city.slug} cityName={city.name} />
       <section className="relative overflow-hidden bg-[var(--color-navy)] text-white">
         <div className="mx-auto grid max-w-6xl gap-10 px-6 py-14 md:grid-cols-[1.2fr_1fr] md:items-start md:py-20">
           <div>
@@ -187,68 +178,6 @@ export default async function CityPage({
                 </div>
               ))}
             </div>
-          </div>
-        </section>
-      ) : null}
-
-      {/* Community groups — Eric's per-city D.R. Horton community writeups
-          from his July 2026 city guides. This is the second per-city
-          unique content block; between this and the highlights above,
-          each city page carries 400-600 words of genuinely distinct
-          content that keeps Google from treating them as templated. */}
-      {content?.communityGroups && content.communityGroups.length > 0 ? (
-        <section className="bg-white py-16">
-          <div className="mx-auto max-w-5xl px-6">
-            <p className="font-[family-name:var(--font-data)] text-xs uppercase tracking-widest text-[var(--color-drh-red)]">
-              About the communities
-            </p>
-            <h2 className="mt-2 font-[family-name:var(--font-display)] text-3xl font-bold text-[var(--color-navy)]">
-              D.R. Horton communities in {city.name}
-            </h2>
-            <div className="mt-8 space-y-6">
-              {content.communityGroups.map((group) => (
-                <div
-                  key={group.name}
-                  className="rounded-2xl border border-[var(--color-line)] bg-[var(--color-mist)] p-6 md:p-8"
-                >
-                  <div className="flex flex-wrap items-baseline justify-between gap-2">
-                    <h3 className="font-[family-name:var(--font-display)] text-xl font-bold text-[var(--color-navy)]">
-                      {group.name}
-                    </h3>
-                    {group.drHortonUrl ? (
-                      <a
-                        href={group.drHortonUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="font-[family-name:var(--font-data)] text-xs font-semibold uppercase tracking-wider text-[var(--color-drh-red)] hover:underline"
-                      >
-                        drhorton.com ↗
-                      </a>
-                    ) : null}
-                  </div>
-                  <ul className="mt-4 space-y-2">
-                    {group.bullets.map((bullet) => (
-                      <li
-                        key={bullet}
-                        className="flex gap-2 text-sm text-[var(--color-ink)]/85"
-                      >
-                        <span
-                          aria-hidden
-                          className="mt-1 text-[var(--color-drh-red)]"
-                        >
-                          •
-                        </span>
-                        <span>{bullet}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              ))}
-            </div>
-            <p className="mt-6 text-xs text-[var(--color-ink)]/50">
-              Inventory, pricing, and incentives change monthly. Always verify on
-              the D.R. Horton community page before quoting.
-            </p>
           </div>
         </section>
       ) : null}

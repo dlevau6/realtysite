@@ -8,8 +8,7 @@ export type SettingKey =
   | "google_ads_conversion_id"
   | "google_ads_buyer_label"
   | "google_ads_seller_label"
-  | "ga4_measurement_id"
-  | "meta_pixel_id";
+  | "ga4_measurement_id";
 
 export interface SettingRow {
   key: SettingKey;

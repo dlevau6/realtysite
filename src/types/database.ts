@@ -74,50 +74,6 @@ export type Lead = {
   created_at: string;
 }
 
-// Admin-editable content — see supabase/schema-drh-v5.sql. Eric/Melissa
-// edit these through /admin/content; the site falls back to the static
-// defaults in src/lib/city-content.ts and src/lib/communities.ts if a
-// row is missing (e.g. before the migration's been run).
-
-export type CityContentHighlightJson = {
-  title: string;
-  body: string;
-};
-
-export type CityContentCommunityGroupJson = {
-  name: string;
-  drHortonUrl?: string;
-  bullets: string[];
-};
-
-export type CityContentRow = {
-  city_slug: string;
-  meta_description: string;
-  intro: string;
-  highlights: CityContentHighlightJson[];
-  community_groups: CityContentCommunityGroupJson[] | null;
-  updated_at: string;
-};
-
-export type CommunityStatusDb =
-  | "selling"
-  | "coming-soon"
-  | "final-homes"
-  | "verify"
-  | "sold-out";
-
-export type CommunityRow = {
-  id: string;
-  city_slug: string;
-  slug: string;
-  name: string;
-  status: CommunityStatusDb;
-  starting_price: string | null;
-  descriptor: string | null;
-  dr_horton_url: string | null;
-  updated_at: string;
-};
-
 export type Database = {
   __InternalSupabase: {
     PostgrestVersion: string;
@@ -180,20 +136,6 @@ export type Database = {
           is_secret?: boolean;
           updated_at?: string;
         };
-        Relationships: [];
-      };
-      city_content: {
-        Row: CityContentRow;
-        Insert: Partial<CityContentRow> &
-          Pick<CityContentRow, "city_slug" | "meta_description" | "intro" | "highlights">;
-        Update: Partial<CityContentRow>;
-        Relationships: [];
-      };
-      communities: {
-        Row: CommunityRow;
-        Insert: Partial<CommunityRow> &
-          Pick<CommunityRow, "city_slug" | "slug" | "name" | "status">;
-        Update: Partial<CommunityRow>;
         Relationships: [];
       };
     };

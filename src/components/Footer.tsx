@@ -18,16 +18,12 @@ export default function Footer() {
           <p className="font-[family-name:var(--font-display)] text-lg font-bold">
             {SITE.brandName}
           </p>
-          {/* CANOPY EQUAL PROMINENCE — same font, size, weight, and color.
-              See ComplianceHeader.tsx for the compliance rule. */}
-          <p className="mt-3 font-[family-name:var(--font-display)] text-base font-semibold text-white">
-            {SITE.agentName}
-          </p>
-          <p className="font-[family-name:var(--font-display)] text-base font-semibold text-white">
+          <p className="mt-2 text-sm text-white/70">
+            Operated by {SITE.agentName}, {SITE.agentTitle}
+            <br />
             {SITE.brokerage}
-          </p>
-          <p className="mt-2 text-xs text-white/70">
-            {SITE.agentTitle} · Lic. {SITE.licenseNumber}
+            <br />
+            Lic. {SITE.licenseNumber}
           </p>
         </div>
 
