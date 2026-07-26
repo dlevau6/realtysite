@@ -72,6 +72,12 @@ export type Lead = {
   property_condition_tags: string[] | null;
   also_looking_to_buy: boolean | null;
   created_at: string;
+  // iHomefinder CRM sync fields — see /supabase/schema-drh-v6.sql and
+  // src/lib/ihomefinder.ts. lead_source distinguishes our own funnel
+  // captures from leads pulled in from iHomefinder's native IDX widget.
+  lead_source: "site" | "ihomefinder_native";
+  ihomefinder_contact_id: string | null;
+  synced_to_ihomefinder_at: string | null;
 }
 
 // Admin-editable content — see supabase/schema-drh-v5.sql. Eric/Melissa

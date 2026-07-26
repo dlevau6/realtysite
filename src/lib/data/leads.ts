@@ -85,6 +85,7 @@ export interface LeadFilters {
   citySlug?: string;
   organicSellerOnly?: boolean;
   search?: string;
+  leadSource?: "site" | "ihomefinder_native";
 }
 
 /** Filterable leads list for the /admin/leads page. */
@@ -103,6 +104,7 @@ export async function getFilteredLeads(
   if (filters.status) query = query.eq("status", filters.status);
   if (filters.citySlug) query = query.eq("city_slug", filters.citySlug);
   if (filters.organicSellerOnly) query = query.eq("is_organic_seller", true);
+  if (filters.leadSource) query = query.eq("lead_source", filters.leadSource);
   if (filters.search) {
     // Postgres ILIKE via `or` — cheap for lists under a few thousand rows.
     const q = `%${filters.search}%`;

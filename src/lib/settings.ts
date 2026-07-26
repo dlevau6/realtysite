@@ -9,7 +9,11 @@ export type SettingKey =
   | "google_ads_buyer_label"
   | "google_ads_seller_label"
   | "ga4_measurement_id"
-  | "meta_pixel_id";
+  | "meta_pixel_id"
+  | "ihomefinder_sync_enabled"
+  | "ihomefinder_push_endpoint"
+  | "ihomefinder_api_key"
+  | "ihomefinder_webhook_secret";
 
 export interface SettingRow {
   key: SettingKey;

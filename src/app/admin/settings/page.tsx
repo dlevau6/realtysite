@@ -41,6 +41,17 @@ const SECTIONS: {
       "meta_pixel_id",
     ],
   },
+  {
+    title: "iHomefinder CRM sync (placeholder — do not enable yet)",
+    blurb:
+      "Bidirectional sync with iHomefinder MAX: pushes our own leads into their CRM, and (once they confirm they can forward search-widget leads to a custom URL) pulls those into this same Leads table. The endpoint, API key, and payload shape here are UNCONFIRMED — get real details from Eric's iHomefinder account rep before setting ihomefinder_sync_enabled to \"true\". See src/lib/ihomefinder.ts for the full explanation.",
+    keys: [
+      "ihomefinder_sync_enabled",
+      "ihomefinder_push_endpoint",
+      "ihomefinder_api_key",
+      "ihomefinder_webhook_secret",
+    ],
+  },
 ];
 
 export default async function AdminSettingsPage() {

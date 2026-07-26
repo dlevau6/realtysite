@@ -24,9 +24,11 @@ layer these in.
 2. **Supabase**: In the SQL Editor run these files in order:
    `supabase/schema.sql` → `supabase/schema-drh.sql` → `supabase/schema-drh-v2.sql`
    → `supabase/schema-drh-v3.sql` → `supabase/schema-drh-v4.sql` →
-   `supabase/schema-drh-v5.sql`. Each is safe to skip if already run.
-   v3 adds the `settings` table used by the admin panel; v5 adds
-   `city_content` + `communities`, the tables behind `/admin/content`.
+   `supabase/schema-drh-v5.sql` → `supabase/schema-drh-v6.sql`. Each is
+   safe to skip if already run. v3 adds the `settings` table used by the
+   admin panel; v5 adds `city_content` + `communities`, the tables behind
+   `/admin/content`; v6 adds lead-source tracking + settings rows for the
+   (currently disabled, placeholder) iHomefinder sync.
    After v5, run `scripts/seed-content.ts` once (see that file's header)
    to push the existing city/community copy into Supabase so
    `/admin/content` has something to show and edit.
@@ -63,8 +65,11 @@ Eric signs in at **`/admin/login`** with `ADMIN_PASSWORD`. Session lasts
 - **`/admin`** — dashboard with today / week / all-time lead counts,
   buyer vs seller split, complete vs partial split, organic-seller
   count, top cities, and the 8 most-recent leads
-- **`/admin/leads`** — filterable table (by type, status, city,
-  organic-seller flag, or search across name/email/phone/address)
+- **`/admin/leads`** — filterable table (by type, status, city, source,
+  organic-seller flag, or search across name/email/phone/address).
+  "Source" distinguishes leads from our own forms (`site`) vs. leads
+  pulled in from iHomefinder's search widget (`ihomefinder_native`) —
+  see the iHomefinder section below.
 - **`/admin/content`** — per-city editor for intro copy, relocation
   highlights, community write-ups, and the community button tiles
   (name/status/price/descriptor/link) — add, edit, or remove communities
@@ -88,6 +93,34 @@ payload to any webhook URL configured in Settings (fire-and-forget, 5s
 timeout, no impact on user response time). Thank-you pages read the
 Google Ads / GA4 IDs from settings and inject the correct gtag base +
 conversion event automatically.
+
+### iHomefinder MAX sync (placeholder — not live)
+
+Eric chose iHomefinder MAX as his CRM. The scaffolding for a
+bidirectional sync is in place but **intentionally does nothing until
+you flip `ihomefinder_sync_enabled` to `true`** in `/admin/settings`,
+because the actual API contract is unconfirmed:
+
+- **Push** (`src/lib/ihomefinder.ts`) — fires after every buyer/seller
+  lead is saved, same fire-and-forget pattern as the other webhooks.
+  Posts to whatever URL is in `ihomefinder_push_endpoint` with
+  `ihomefinder_api_key` as a Bearer token. The endpoint and request body
+  are a best guess, not a confirmed contract — a document Eric forwarded
+  named an endpoint that doesn't match iHomefinder's publicly documented
+  APIs, so don't trust it. Get the real endpoint/auth/payload from
+  Eric's iHomefinder account rep before enabling.
+- **Pull** (`/api/webhooks/ihomefinder`) — a receiver endpoint iHomefinder
+  could POST their own search-widget leads to, if their "Lead
+  Forwarding" feature supports a custom destination (needs confirming
+  with their support). Authenticated via a shared secret as a URL query
+  param (`?secret=...`) since we can't control what headers a
+  third-party forwarder sends. Inserts as `lead_source =
+  'ihomefinder_native'` so `/admin/leads` shows everything — our funnel
+  leads and their widget leads — in one table.
+
+Once real docs are in hand, expect to rewrite the payload shape in both
+files; the settings-driven endpoint/key means that's a config change,
+not a redeploy, for the push side at least.
 
 ## What's built
 

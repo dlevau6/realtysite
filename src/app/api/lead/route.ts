@@ -3,6 +3,7 @@ import { z } from "zod";
 import { getSupabaseServiceClient } from "@/lib/supabase";
 import { buildRoutingTag } from "@/lib/site-config";
 import { dispatchLeadWebhooks } from "@/lib/webhooks";
+import { pushLeadToIHomefinder } from "@/lib/ihomefinder";
 
 const leadSchema = z.object({
   name: z.string().min(1).max(120),
@@ -46,27 +47,32 @@ export async function POST(request: Request) {
   const routingTag = buildRoutingTag(d.citySlug, isOrganicSeller);
 
   const supabase = getSupabaseServiceClient();
-  const { error } = await supabase.from("leads").insert({
-    name: d.name,
-    email: d.email,
-    phone: d.phone,
-    source_page: d.sourcePage,
-    city_slug: d.citySlug,
-    variant: d.variant,
-    is_organic_seller: isOrganicSeller,
-    home_contingency: d.homeContingency ?? null,
-    trade_in_address: d.tradeInAddress ?? null,
-    budget: d.budget ?? null,
-    timeline: d.timeline ?? null,
-    move_in_ready: d.moveInReady ?? null,
-    crm_routing_tag: routingTag,
-    utm_source: d.utmSource ?? null,
-    utm_medium: d.utmMedium ?? null,
-    utm_campaign: d.utmCampaign ?? null,
-    utm_term: d.utmTerm ?? null,
-    sms_consent: d.smsConsent,
-    status: "complete",
-  });
+  const { data: inserted, error } = await supabase
+    .from("leads")
+    .insert({
+      name: d.name,
+      email: d.email,
+      phone: d.phone,
+      source_page: d.sourcePage,
+      city_slug: d.citySlug,
+      variant: d.variant,
+      is_organic_seller: isOrganicSeller,
+      home_contingency: d.homeContingency ?? null,
+      trade_in_address: d.tradeInAddress ?? null,
+      budget: d.budget ?? null,
+      timeline: d.timeline ?? null,
+      move_in_ready: d.moveInReady ?? null,
+      crm_routing_tag: routingTag,
+      utm_source: d.utmSource ?? null,
+      utm_medium: d.utmMedium ?? null,
+      utm_campaign: d.utmCampaign ?? null,
+      utm_term: d.utmTerm ?? null,
+      sms_consent: d.smsConsent,
+      status: "complete",
+      lead_source: "site",
+    })
+    .select("id")
+    .single();
 
   if (error) {
     console.error("Lead insert failed:", error);
@@ -91,6 +97,18 @@ export async function POST(request: Request) {
     status: "complete",
     lead_type: "buyer",
     sms_consent: d.smsConsent,
+  });
+
+  // Also push to iHomefinder's CRM if that integration is configured —
+  // no-ops until Eric has real credentials (see src/lib/ihomefinder.ts).
+  await pushLeadToIHomefinder({
+    id: inserted.id,
+    name: d.name,
+    email: d.email,
+    phone: d.phone,
+    leadType: "buyer",
+    citySlug: d.citySlug,
+    crmRoutingTag: routingTag,
   });
 
   // TODO wiring points still open:

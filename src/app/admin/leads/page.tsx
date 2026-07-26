@@ -28,6 +28,7 @@ export default async function AdminLeadsPage({
   const citySlug = asStr(sp.city);
   const organicOnly = asStr(sp.organic) === "1";
   const search = asStr(sp.q);
+  const source = asStr(sp.source);
 
   const leads = await getFilteredLeads({
     leadType: leadType === "buyer" || leadType === "seller" ? leadType : undefined,
@@ -35,6 +36,7 @@ export default async function AdminLeadsPage({
     citySlug,
     organicSellerOnly: organicOnly,
     search,
+    leadSource: source === "site" || source === "ihomefinder_native" ? source : undefined,
   });
 
   // Build filter chip URLs by mutating the current searchParams
@@ -46,6 +48,7 @@ export default async function AdminLeadsPage({
       city: citySlug,
       organic: organicOnly ? "1" : undefined,
       q: search,
+      source,
       ...params,
     })) {
       if (v) usp.set(k, v);
@@ -109,6 +112,17 @@ export default async function AdminLeadsPage({
             ))}
           </select>
         </div>
+        <div className="mt-3 grid gap-3 md:grid-cols-[1fr_3fr]">
+          <select
+            name="source"
+            defaultValue={source ?? ""}
+            className="rounded-lg border border-[var(--color-line)] px-3 py-2 text-sm"
+          >
+            <option value="">All sources</option>
+            <option value="site">Site funnels</option>
+            <option value="ihomefinder_native">iHomefinder widget</option>
+          </select>
+        </div>
         <div className="mt-3 flex flex-wrap items-center gap-3">
           <label className="flex items-center gap-2 text-sm">
             <input
@@ -157,6 +171,16 @@ export default async function AdminLeadsPage({
         >
           Partial captures
         </Link>
+        <Link
+          href={chip({ source: source === "ihomefinder_native" ? undefined : "ihomefinder_native" })}
+          className={`rounded-full border px-3 py-1 font-semibold ${
+            source === "ihomefinder_native"
+              ? "border-[var(--color-drh-red)] bg-[var(--color-drh-red)] text-white"
+              : "border-[var(--color-line)] bg-white text-[var(--color-navy)]"
+          }`}
+        >
+          iHomefinder widget
+        </Link>
       </div>
 
       {/* Table */}
@@ -166,6 +190,7 @@ export default async function AdminLeadsPage({
             <tr className="text-left text-xs uppercase tracking-widest text-[var(--color-ink)]/60">
               <th className="p-3 font-semibold">When</th>
               <th className="p-3 font-semibold">Type</th>
+              <th className="p-3 font-semibold">Source</th>
               <th className="p-3 font-semibold">Name</th>
               <th className="p-3 font-semibold">Contact</th>
               <th className="p-3 font-semibold">City / Address</th>
@@ -177,7 +202,7 @@ export default async function AdminLeadsPage({
             {leads.length === 0 ? (
               <tr>
                 <td
-                  colSpan={7}
+                  colSpan={8}
                   className="p-8 text-center text-sm text-[var(--color-ink)]/60"
                 >
                   No leads match these filters.
@@ -212,6 +237,19 @@ export default async function AdminLeadsPage({
                         var {lead.variant}
                       </div>
                     ) : null}
+                  </td>
+                  <td className="p-3">
+                    <span
+                      className={`inline-block rounded-full px-2 py-0.5 text-[10px] font-semibold ${
+                        lead.lead_source === "ihomefinder_native"
+                          ? "bg-amber-100 text-amber-800"
+                          : "bg-[var(--color-mist)] text-[var(--color-ink)]/60"
+                      }`}
+                    >
+                      {lead.lead_source === "ihomefinder_native"
+                        ? "iHomefinder"
+                        : "Site"}
+                    </span>
                   </td>
                   <td className="p-3 font-medium text-[var(--color-navy)]">
                     {lead.name}

@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { getSupabaseServiceClient } from "@/lib/supabase";
 import { dispatchLeadWebhooks } from "@/lib/webhooks";
+import { pushLeadToIHomefinder } from "@/lib/ihomefinder";
 
 const sellerLeadSchema = z.object({
   name: z.string().min(1).max(120),
@@ -40,24 +41,29 @@ export async function POST(request: Request) {
     : "Organic-Seller-Direct";
 
   const supabase = getSupabaseServiceClient();
-  const { error } = await supabase.from("leads").insert({
-    name: d.name,
-    email: d.email,
-    phone: d.phone,
-    source_page: d.sourcePage,
-    lead_type: "seller",
-    trade_in_address: d.propertyAddress,
-    property_condition_tags: d.propertyConditionTags,
-    also_looking_to_buy: d.alsoLookingToBuy,
-    is_organic_seller: true,
-    crm_routing_tag: routingTag,
-    utm_source: d.utmSource ?? null,
-    utm_medium: d.utmMedium ?? null,
-    utm_campaign: d.utmCampaign ?? null,
-    utm_term: d.utmTerm ?? null,
-    sms_consent: d.smsConsent,
-    status: "complete",
-  });
+  const { data: inserted, error } = await supabase
+    .from("leads")
+    .insert({
+      name: d.name,
+      email: d.email,
+      phone: d.phone,
+      source_page: d.sourcePage,
+      lead_type: "seller",
+      trade_in_address: d.propertyAddress,
+      property_condition_tags: d.propertyConditionTags,
+      also_looking_to_buy: d.alsoLookingToBuy,
+      is_organic_seller: true,
+      crm_routing_tag: routingTag,
+      utm_source: d.utmSource ?? null,
+      utm_medium: d.utmMedium ?? null,
+      utm_campaign: d.utmCampaign ?? null,
+      utm_term: d.utmTerm ?? null,
+      sms_consent: d.smsConsent,
+      status: "complete",
+      lead_source: "site",
+    })
+    .select("id")
+    .single();
 
   if (error) {
     console.error("Seller lead insert failed:", error);
@@ -78,6 +84,16 @@ export async function POST(request: Request) {
     status: "complete",
     lead_type: "seller",
     sms_consent: d.smsConsent,
+  });
+
+  await pushLeadToIHomefinder({
+    id: inserted.id,
+    name: d.name,
+    email: d.email,
+    phone: d.phone,
+    leadType: "seller",
+    citySlug: null,
+    crmRoutingTag: routingTag,
   });
 
   return NextResponse.json({ ok: true, routingTag });
