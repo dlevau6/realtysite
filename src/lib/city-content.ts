@@ -10,7 +10,14 @@
  * dropped Hickory, Kannapolis, Sherrills Ford (not on Eric's list); added
  * Bolivia, Clayton, Fayetteville, Fuquay-Varina, Kernersville, Leland,
  * Wilmington, Winston-Salem.
+ *
+ * As of 2026-07-26, CITY_CONTENT below is the fallback/default data —
+ * the live site reads from Supabase's `city_content` table first (see
+ * getCityContent below) so Eric can edit this copy from /admin/content
+ * without a redeploy. See supabase/schema-drh-v5.sql.
  */
+
+import { getSupabaseServiceClient } from "@/lib/supabase";
 
 export interface CityHighlight {
   /** Short bold lead-in (2-4 words) */
@@ -726,6 +733,113 @@ export const CITY_CONTENT: Record<string, CityContent> = {
   },
 };
 
-export function getCityContent(citySlug: string): CityContent | null {
+/** Static default lookup — the fallback whenever a city has no Supabase
+ *  row yet (migration not run, or that city not seeded). Also what
+ *  scripts/seed-content.ts pushes into Supabase in the first place. */
+export function getCityContentDefault(citySlug: string): CityContent | null {
   return CITY_CONTENT[citySlug] ?? null;
+}
+
+/**
+ * City copy for the public site. Reads from Supabase's `city_content`
+ * table first (that's what /admin/content writes to) and falls back to
+ * the static default above if there's no row — which is also what
+ * happens transparently before schema-drh-v5.sql + the seed script have
+ * been run, so nothing breaks mid-migration.
+ */
+export async function getCityContent(citySlug: string): Promise<CityContent | null> {
+  try {
+    const supabase = getSupabaseServiceClient();
+    const { data, error } = await supabase
+      .from("city_content")
+      .select("*")
+      .eq("city_slug", citySlug)
+      .single();
+    if (!error && data) {
+      return {
+        metaDescription: data.meta_description,
+        intro: data.intro,
+        highlights: data.highlights,
+        communityGroups: data.community_groups ?? undefined,
+      };
+    }
+  } catch {
+    // Missing env vars, table not migrated yet, network hiccup — fall
+    // through to the static default rather than breaking the page.
+  }
+  return getCityContentDefault(citySlug);
+}
+
+/** Every city that has default content — used by /admin/content to
+ *  render an edit row for all 19 cities even before any of them has a
+ *  Supabase row yet. */
+export function getAllCityContentDefaults(): Array<{ citySlug: string; content: CityContent }> {
+  return Object.entries(CITY_CONTENT).map(([citySlug, content]) => ({
+    citySlug,
+    content,
+  }));
+}
+
+/**
+ * Effective content for every known city (one bulk query instead of 19),
+ * merging Supabase rows over the static defaults — this is what
+ * /admin/content lists so Eric sees exactly what's live, plus a flag for
+ * whether a given city has been customized yet.
+ */
+export async function getAllCityContentForAdmin(): Promise<
+  Array<{ citySlug: string; content: CityContent; isCustomized: boolean }>
+> {
+  const defaults = getAllCityContentDefaults();
+  let dbRows: Record<string, CityContent> = {};
+  try {
+    const supabase = getSupabaseServiceClient();
+    const { data, error } = await supabase.from("city_content").select("*");
+    if (!error && data) {
+      dbRows = Object.fromEntries(
+        data.map((row) => [
+          row.city_slug,
+          {
+            metaDescription: row.meta_description,
+            intro: row.intro,
+            highlights: row.highlights,
+            communityGroups: row.community_groups ?? undefined,
+          } satisfies CityContent,
+        ])
+      );
+    }
+  } catch {
+    // Table not migrated yet — every city just shows its default below.
+  }
+
+  return defaults.map(({ citySlug, content }) => ({
+    citySlug,
+    content: dbRows[citySlug] ?? content,
+    isCustomized: citySlug in dbRows,
+  }));
+}
+
+// ---------------------------------------------------------------------
+// Admin write helper — used by /api/admin/content routes only. Already
+// behind the HMAC admin session check in middleware.ts (same pattern as
+// setSetting() in lib/settings.ts and upsertCommunity() above).
+// ---------------------------------------------------------------------
+
+export async function setCityContent(
+  citySlug: string,
+  content: CityContent
+): Promise<{ ok: boolean; error?: string }> {
+  const supabase = getSupabaseServiceClient();
+  const { error } = await supabase.from("city_content").upsert(
+    {
+      city_slug: citySlug,
+      meta_description: content.metaDescription,
+      intro: content.intro,
+      highlights: content.highlights,
+      community_groups: content.communityGroups ?? null,
+      updated_at: new Date().toISOString(),
+    },
+    { onConflict: "city_slug" }
+  );
+  if (error) return { ok: false, error: error.message };
+  return { ok: true };
 }

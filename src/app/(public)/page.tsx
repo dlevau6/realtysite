@@ -15,8 +15,13 @@ export const metadata: Metadata = {
   description: SITE.description,
 };
 
-export default function HomePage() {
-  const featured = getFeaturedCommunities().slice(0, 6);
+// Featured communities are editable from /admin/content now — regenerate
+// in the background every 5 minutes so an admin change shows up without
+// a redeploy, same as the city pages.
+export const revalidate = 300;
+
+export default async function HomePage() {
+  const featured = (await getFeaturedCommunities()).slice(0, 6);
 
   return (
     <>

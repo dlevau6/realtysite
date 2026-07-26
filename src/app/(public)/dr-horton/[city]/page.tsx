@@ -19,6 +19,13 @@ export function generateStaticParams() {
   return ALL_CITIES.map((city) => ({ city: city.slug }));
 }
 
+// City content + communities can now be edited from /admin/content
+// without a redeploy (see lib/city-content.ts, lib/communities.ts).
+// Keep these pages statically generated for speed/SEO but regenerate in
+// the background every 5 minutes so an admin edit shows up promptly
+// instead of only at the next deploy.
+export const revalidate = 300;
+
 export async function generateMetadata({
   params,
 }: {
@@ -27,7 +34,7 @@ export async function generateMetadata({
   const { city: slug } = await params;
   const city = getCityBySlug(slug);
   if (!city) return {};
-  const content = getCityContent(slug);
+  const content = await getCityContent(slug);
   return {
     title: `D.R. Horton new construction homes in ${city.name}, NC`,
     description:
@@ -48,8 +55,8 @@ export default async function CityPage({
   if (!city) notFound();
 
   const metro = getMetroForCity(city.slug);
-  const communities = getCommunitiesForCity(city.slug);
-  const content = getCityContent(city.slug);
+  const communities = await getCommunitiesForCity(city.slug);
+  const content = await getCityContent(city.slug);
 
   const sp = await searchParams;
   const asString = (v: string | string[] | undefined): string | undefined =>

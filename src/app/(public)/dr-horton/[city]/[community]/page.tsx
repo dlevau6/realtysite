@@ -9,16 +9,24 @@ import {
   getMetroForCity,
 } from "@/lib/site-config";
 import {
-  COMMUNITIES,
+  getAllCommunities,
   getCommunityBySlug,
   statusLabel,
 } from "@/lib/communities";
 
-export function generateStaticParams() {
-  return COMMUNITIES.filter((c) => c.status !== "sold-out").map((c) => ({
-    city: c.citySlug,
-    community: c.slug,
-  }));
+// Communities can now be added/edited/removed from /admin/content
+// without a redeploy — see lib/communities.ts. Keep pages statically
+// generated for speed/SEO but regenerate in the background every 5
+// minutes so admin changes show up promptly, and let Next.js render
+// on-demand for any brand-new community slug not in the static params
+// list below (dynamicParams defaults to true — not overridden here).
+export const revalidate = 300;
+
+export async function generateStaticParams() {
+  const communities = await getAllCommunities();
+  return communities
+    .filter((c) => c.status !== "sold-out")
+    .map((c) => ({ city: c.citySlug, community: c.slug }));
 }
 
 export async function generateMetadata({
@@ -27,7 +35,7 @@ export async function generateMetadata({
   params: Promise<{ city: string; community: string }>;
 }): Promise<Metadata> {
   const { city: citySlug, community: communitySlug } = await params;
-  const community = getCommunityBySlug(citySlug, communitySlug);
+  const community = await getCommunityBySlug(citySlug, communitySlug);
   const city = getCityBySlug(citySlug);
   if (!community || !city) return {};
   return {
@@ -46,7 +54,7 @@ export default async function CommunityDetailPage({
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
   const { city: citySlug, community: communitySlug } = await params;
-  const community = getCommunityBySlug(citySlug, communitySlug);
+  const community = await getCommunityBySlug(citySlug, communitySlug);
   const city = getCityBySlug(citySlug);
   if (!community || !city || community.status === "sold-out") notFound();
 

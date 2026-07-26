@@ -21,10 +21,15 @@ layer these in.
 
 1. **GitHub**: `git init && git add -A && git commit -m "DR Horton pivot" &&
    git remote add origin <your-repo-url> && git push -u origin main`.
-2. **Supabase**: In the SQL Editor run **four** files in order:
+2. **Supabase**: In the SQL Editor run these files in order:
    `supabase/schema.sql` → `supabase/schema-drh.sql` → `supabase/schema-drh-v2.sql`
-   → `supabase/schema-drh-v3.sql`. Each is safe to skip if already run;
-   v3 adds the `settings` table used by the admin panel.
+   → `supabase/schema-drh-v3.sql` → `supabase/schema-drh-v4.sql` →
+   `supabase/schema-drh-v5.sql`. Each is safe to skip if already run.
+   v3 adds the `settings` table used by the admin panel; v5 adds
+   `city_content` + `communities`, the tables behind `/admin/content`.
+   After v5, run `scripts/seed-content.ts` once (see that file's header)
+   to push the existing city/community copy into Supabase so
+   `/admin/content` has something to show and edit.
    Copy the URL + both API keys from Project Settings → API.
 3. **Vercel**: Import the repo, drop the env vars from `.env.example` into
    Project Settings → Environment Variables, deploy.
@@ -60,6 +65,15 @@ Eric signs in at **`/admin/login`** with `ADMIN_PASSWORD`. Session lasts
   count, top cities, and the 8 most-recent leads
 - **`/admin/leads`** — filterable table (by type, status, city,
   organic-seller flag, or search across name/email/phone/address)
+- **`/admin/content`** — per-city editor for intro copy, relocation
+  highlights, community write-ups, and the community button tiles
+  (name/status/price/descriptor/link) — add, edit, or remove communities
+  without a redeploy. Reads/writes the `city_content` and `communities`
+  Supabase tables; falls back to the static defaults in
+  `src/lib/city-content.ts` / `src/lib/communities.ts` for anything not
+  yet in the database. Deliberately does NOT expose legal/compliance
+  copy (equal-prominence header, TCPA consent text, IDX disclaimers,
+  schema markup) — those stay code-controlled.
 - **`/admin/settings`** — integrations control panel. All values stored
   in the Supabase `settings` table and read at request time — no
   redeploy needed to change them. Covers:

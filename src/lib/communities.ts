@@ -4,10 +4,14 @@
  * marked "Verify" require confirmation on drhorton.com before the button
  * goes live per Section 3's verification instructions.
  *
- * When Eric adds/removes communities we can move this into a Supabase
- * table so he can edit from the admin panel — for now this is a static
- * seed to ship the demo. Adding new communities means editing this file.
+ * As of 2026-07-26: the COMMUNITIES array below is the static default /
+ * fallback. The live site reads from Supabase's `communities` table
+ * first (see getAllCommunities below), which is what /admin/content
+ * writes to — so Eric can add, edit, or remove communities himself
+ * without a redeploy. See supabase/schema-drh-v5.sql.
  */
+
+import { getSupabaseServiceClient } from "@/lib/supabase";
 
 export type CommunityStatus =
   | "selling" // Selling now, build a lead button
@@ -119,27 +123,103 @@ export const COMMUNITIES: Community[] = [
   { slug: "fayetteville-metro-cluster", name: "Fayetteville metro communities (28306/28311)", citySlug: "fayetteville", status: "verify", descriptor: "Five-plus communities, VA-loan sweet spot — confirm individual names" },
 ];
 
-export function getCommunitiesForCity(citySlug: string): Community[] {
-  return COMMUNITIES.filter((c) => c.citySlug === citySlug);
+/**
+ * All communities, Supabase-first with a static fallback to the
+ * COMMUNITIES array above. Same pattern as getCityContent() in
+ * city-content.ts — see that file's comment for why. Once
+ * scripts/seed-content.ts has been run, Supabase is authoritative:
+ * anything Eric adds, edits, or removes in /admin/content shows up here,
+ * including brand-new communities that don't exist in the static array
+ * at all.
+ */
+export async function getAllCommunities(): Promise<Community[]> {
+  try {
+    const supabase = getSupabaseServiceClient();
+    const { data, error } = await supabase.from("communities").select("*");
+    if (!error && data && data.length > 0) {
+      return data.map((row) => ({
+        slug: row.slug,
+        name: row.name,
+        citySlug: row.city_slug,
+        status: row.status,
+        startingPrice: row.starting_price ?? undefined,
+        descriptor: row.descriptor ?? undefined,
+        drHortonUrl: row.dr_horton_url ?? undefined,
+      }));
+    }
+  } catch {
+    // Missing env vars, table not migrated yet, network hiccup — fall
+    // through to the static default rather than breaking the page.
+  }
+  return COMMUNITIES;
+}
+
+export async function getCommunitiesForCity(citySlug: string): Promise<Community[]> {
+  const all = await getAllCommunities();
+  return all.filter((c) => c.citySlug === citySlug);
 }
 
 /** Communities to feature on the homepage carousel — only "selling now"
  *  with real prices, sampled across metros. */
-export function getFeaturedCommunities(): Community[] {
-  return COMMUNITIES.filter(
-    (c) => c.status === "selling" && c.startingPrice
+export async function getFeaturedCommunities(): Promise<Community[]> {
+  const all = await getAllCommunities();
+  return all.filter((c) => c.status === "selling" && c.startingPrice);
+}
+
+export async function getCommunityBySlug(
+  citySlug: string,
+  communitySlug: string
+): Promise<Community | null> {
+  const all = await getAllCommunities();
+  return (
+    all.find((c) => c.citySlug === citySlug && c.slug === communitySlug) ??
+    null
   );
 }
 
-export function getCommunityBySlug(
-  citySlug: string,
-  communitySlug: string
-): Community | null {
-  return (
-    COMMUNITIES.find(
-      (c) => c.citySlug === citySlug && c.slug === communitySlug
-    ) ?? null
+// ---------------------------------------------------------------------
+// Admin write helpers — used by /api/admin/content routes only. Every
+// caller here is already behind the HMAC admin session check in
+// middleware.ts, so these don't re-check auth themselves (same pattern
+// as setSetting() in lib/settings.ts).
+// ---------------------------------------------------------------------
+
+/** Create or update a single community. `slug` + `citySlug` together are
+ *  the natural key (unique constraint in the DB) — passing an existing
+ *  pair updates that row instead of creating a duplicate. */
+export async function upsertCommunity(
+  community: Community
+): Promise<{ ok: boolean; error?: string }> {
+  const supabase = getSupabaseServiceClient();
+  const { error } = await supabase.from("communities").upsert(
+    {
+      city_slug: community.citySlug,
+      slug: community.slug,
+      name: community.name,
+      status: community.status,
+      starting_price: community.startingPrice ?? null,
+      descriptor: community.descriptor ?? null,
+      dr_horton_url: community.drHortonUrl ?? null,
+      updated_at: new Date().toISOString(),
+    },
+    { onConflict: "city_slug,slug" }
   );
+  if (error) return { ok: false, error: error.message };
+  return { ok: true };
+}
+
+export async function deleteCommunity(
+  citySlug: string,
+  slug: string
+): Promise<{ ok: boolean; error?: string }> {
+  const supabase = getSupabaseServiceClient();
+  const { error } = await supabase
+    .from("communities")
+    .delete()
+    .eq("city_slug", citySlug)
+    .eq("slug", slug);
+  if (error) return { ok: false, error: error.message };
+  return { ok: true };
 }
 
 /** Human label for status - used in badges and button copy. */
