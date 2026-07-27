@@ -4,7 +4,8 @@ import { setSetting, type SettingKey } from "@/lib/settings";
 
 const ALLOWED_KEYS: readonly SettingKey[] = [
   "structurely_webhook_url",
-  "followupboss_webhook_url",
+  "followupboss_webhook_url", // deprecated, kept allow-listed so the row can still be cleared out; no longer read anywhere
+  "followupboss_api_key",
   "homebot_webhook_url",
   "notification_email",
   "google_ads_conversion_id",

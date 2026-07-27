@@ -17,12 +17,14 @@ const SECTIONS: {
   {
     title: "Webhooks (outbound)",
     blurb:
-      "Every new lead is POSTed to any URL you set here. Structurely handles the 60-second AI SMS; Follow Up Boss and Homebot are optional.",
-    keys: [
-      "structurely_webhook_url",
-      "followupboss_webhook_url",
-      "homebot_webhook_url",
-    ],
+      "Every new lead is POSTed to any URL you set here. Structurely handles the 60-second AI SMS; Homebot is optional (seller leads only). Follow Up Boss has its own section below — it doesn't work as a plain webhook URL.",
+    keys: ["structurely_webhook_url", "homebot_webhook_url"],
+  },
+  {
+    title: "Follow Up Boss CRM",
+    blurb:
+      "Uses Follow Up Boss's real API (not a generic webhook). Get the API key from Eric's FUB account: Admin → API. Every buyer/seller lead is pushed the moment it's saved.",
+    keys: ["followupboss_api_key"],
   },
   {
     title: "Notifications",

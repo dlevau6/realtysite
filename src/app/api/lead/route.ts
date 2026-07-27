@@ -4,6 +4,7 @@ import { getSupabaseServiceClient } from "@/lib/supabase";
 import { buildRoutingTag } from "@/lib/site-config";
 import { dispatchLeadWebhooks } from "@/lib/webhooks";
 import { pushLeadToIHomefinder } from "@/lib/ihomefinder";
+import { pushLeadToFollowUpBoss } from "@/lib/followupboss";
 
 const leadSchema = z.object({
   name: z.string().min(1).max(120),
@@ -109,6 +110,18 @@ export async function POST(request: Request) {
     leadType: "buyer",
     citySlug: d.citySlug,
     crmRoutingTag: routingTag,
+  });
+
+  // Push to Follow Up Boss via their real API — no-ops until
+  // followupboss_api_key is set in /admin/settings.
+  await pushLeadToFollowUpBoss({
+    name: d.name,
+    email: d.email,
+    phone: d.phone,
+    type: "Registration",
+    message: `Buyer lead from ${d.citySlug} (variant ${d.variant})${
+      d.budget ? ` — budget ${d.budget}` : ""
+    }${d.timeline ? `, timeline ${d.timeline}` : ""}. Routing tag: ${routingTag}.`,
   });
 
   // TODO wiring points still open:

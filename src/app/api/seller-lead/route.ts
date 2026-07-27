@@ -3,6 +3,7 @@ import { z } from "zod";
 import { getSupabaseServiceClient } from "@/lib/supabase";
 import { dispatchLeadWebhooks } from "@/lib/webhooks";
 import { pushLeadToIHomefinder } from "@/lib/ihomefinder";
+import { pushLeadToFollowUpBoss } from "@/lib/followupboss";
 
 const sellerLeadSchema = z.object({
   name: z.string().min(1).max(120),
@@ -94,6 +95,16 @@ export async function POST(request: Request) {
     leadType: "seller",
     citySlug: null,
     crmRoutingTag: routingTag,
+  });
+
+  await pushLeadToFollowUpBoss({
+    name: d.name,
+    email: d.email,
+    phone: d.phone,
+    type: "Seller Inquiry",
+    message: `Seller lead for ${d.propertyAddress}. Condition: ${
+      d.propertyConditionTags.join(", ") || "not specified"
+    }.${d.alsoLookingToBuy ? " Also looking to buy." : ""} Routing tag: ${routingTag}.`,
   });
 
   return NextResponse.json({ ok: true, routingTag });

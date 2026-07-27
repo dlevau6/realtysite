@@ -1,9 +1,13 @@
 import { getSettingsMap } from "@/lib/settings";
 import type { Lead } from "@/types/database";
 
+// Follow Up Boss is deliberately NOT in this list — it doesn't accept
+// arbitrary webhook POSTs. It has a real, documented API (Basic Auth +
+// a fixed endpoint + a specific payload shape) handled separately by
+// pushLeadToFollowUpBoss() in src/lib/followupboss.ts. Keeping it out of
+// this generic dispatcher avoids silently mis-integrating it.
 const WEBHOOK_KEYS = [
   "structurely_webhook_url",
-  "followupboss_webhook_url",
   "homebot_webhook_url",
 ] as const;
 
@@ -27,12 +31,6 @@ export async function dispatchLeadWebhooks(payload: Payload): Promise<void> {
     targets.push({
       url: settings.structurely_webhook_url,
       name: "structurely",
-    });
-  }
-  if (settings.followupboss_webhook_url) {
-    targets.push({
-      url: settings.followupboss_webhook_url,
-      name: "followupboss",
     });
   }
   if (

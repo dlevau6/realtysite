@@ -13,7 +13,8 @@ export type SettingKey =
   | "ihomefinder_sync_enabled"
   | "ihomefinder_push_endpoint"
   | "ihomefinder_api_key"
-  | "ihomefinder_webhook_secret";
+  | "ihomefinder_webhook_secret"
+  | "followupboss_api_key";
 
 export interface SettingRow {
   key: SettingKey;

@@ -24,11 +24,13 @@ layer these in.
 2. **Supabase**: In the SQL Editor run these files in order:
    `supabase/schema.sql` → `supabase/schema-drh.sql` → `supabase/schema-drh-v2.sql`
    → `supabase/schema-drh-v3.sql` → `supabase/schema-drh-v4.sql` →
-   `supabase/schema-drh-v5.sql` → `supabase/schema-drh-v6.sql`. Each is
-   safe to skip if already run. v3 adds the `settings` table used by the
-   admin panel; v5 adds `city_content` + `communities`, the tables behind
-   `/admin/content`; v6 adds lead-source tracking + settings rows for the
-   (currently disabled, placeholder) iHomefinder sync.
+   `supabase/schema-drh-v5.sql` → `supabase/schema-drh-v6.sql` →
+   `supabase/schema-drh-v7.sql`. Each is safe to skip if already run.
+   v3 adds the `settings` table used by the admin panel; v5 adds
+   `city_content` + `communities`, the tables behind `/admin/content`;
+   v6 adds lead-source tracking + settings rows for the (currently
+   disabled, placeholder) iHomefinder sync; v7 fixes Follow Up Boss to
+   use their real API instead of a generic webhook URL.
    After v5, run `scripts/seed-content.ts` once (see that file's header)
    to push the existing city/community copy into Supabase so
    `/admin/content` has something to show and edit.
@@ -82,8 +84,10 @@ Eric signs in at **`/admin/login`** with `ADMIN_PASSWORD`. Session lasts
 - **`/admin/settings`** — integrations control panel. All values stored
   in the Supabase `settings` table and read at request time — no
   redeploy needed to change them. Covers:
-  - Structurely / Follow Up Boss / Homebot webhook URLs
-    (Homebot only fires for seller leads)
+  - Structurely / Homebot webhook URLs (Homebot only fires for seller
+    leads)
+  - Follow Up Boss API key (their real API, not a webhook URL — see
+    below)
   - Notification email
   - Google Ads conversion ID + buyer/seller labels
   - GA4 measurement ID
@@ -93,6 +97,19 @@ payload to any webhook URL configured in Settings (fire-and-forget, 5s
 timeout, no impact on user response time). Thank-you pages read the
 Google Ads / GA4 IDs from settings and inject the correct gtag base +
 conversion event automatically.
+
+### Follow Up Boss (real, working integration)
+
+Unlike the other integrations below, this one is built against Follow Up
+Boss's actual public API docs
+(https://docs.followupboss.com/reference/events-post), not a guess:
+`src/lib/followupboss.ts` POSTs to `https://api.followupboss.com/v1/events`
+with HTTP Basic Auth (the API key), in the exact payload shape FUB
+documents. It fires automatically after every buyer/seller lead save —
+nothing else to build. To turn it on: in Eric's Follow Up Boss account go
+to **Admin → API**, generate a key, paste it into `/admin/settings` under
+"Follow Up Boss CRM." The older `followupboss_webhook_url` setting is
+deprecated and no longer read by anything.
 
 ### iHomefinder MAX sync (placeholder — not live)
 
